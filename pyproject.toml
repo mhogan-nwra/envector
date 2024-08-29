@@ -48,7 +48,7 @@ distribution = true
 
 [tool.pdm.version]
 source = "file"
-path = "envector/__init__.py"
+path = "src/envector/__init__.py"
 
 [tool.pdm.scripts]
 #sphinx_build = "sphinx-build -b html doc_source docs"
