@@ -7,19 +7,21 @@ This file is part of NavLab and is available from www.navlab.net/nvector
 # pylint: disable=invalid-name
 
 from __future__ import division, print_function
+
 import warnings
+
 import numpy as np
 from numpy import arctan2, sin, cos, cross, dot, sqrt
 from numpy.linalg import norm
 from scipy.interpolate import interp1d
 from scipy.signal import savgol_filter
+
 from envector import _examples, license as _license
-from envector.rotation import E_rotation, n_E2R_EN, n_E2lat_lon, change_axes_to_E
-from envector.util import mdot, nthroot, unit, eccentricity2, polar_radius
+from envector._common import test_docstrings, use_docstring, _make_summary
 from envector.karney import (geodesic_reckon as _geodesic_reckon,
                              geodesic_distance as _geodesic_distance)
-from envector._common import test_docstrings, use_docstring, _make_summary
-
+from envector.rotation import E_rotation, n_E2R_EN, n_E2lat_lon, change_axes_to_E
+from envector.util import mdot, nthroot, unit, eccentricity2, polar_radius
 
 __all__ = ['closest_point_on_great_circle',
            'cross_track_distance',

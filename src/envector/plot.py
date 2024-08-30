@@ -4,14 +4,15 @@ Created on 9. des. 2015
 @author: pab
 """
 from functools import partial
+
 try:
     import cartopy.feature as cpf
     import cartopy.crs as ccrs
 except OSError:
     cpf = ccrs = None
-
 import matplotlib.pyplot as plt
 import numpy as np
+
 from envector import rad, deg, lat_lon2n_E, unit, n_E2lat_lon
 
 

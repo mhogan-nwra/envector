@@ -4,14 +4,17 @@ Utility functions
 
 """
 from __future__ import division, print_function
+
 import functools
 import warnings
 from collections import namedtuple
+
 import numpy as np
 from numpy import rad2deg, deg2rad
 from numpy.linalg import norm
-from envector._common import test_docstrings, _make_summary
+
 from envector import license as _license
+from envector._common import test_docstrings, _make_summary
 
 __all__ = ['deg', 'rad', 'mdot', 'nthroot', 'get_ellipsoid', 'select_ellipsoid', 'unit',
            'allclose', 'eccentricity2', 'polar_radius', 'third_flattening', 'deprecate']
