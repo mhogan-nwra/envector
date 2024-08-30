@@ -563,7 +563,7 @@ class TestExamples:
         assert_allclose(lat, 40.31864307)
         assert_allclose(lon, 55.90186788)
 
-    def test_intersect_on_parallell_paths(self):
+    def test_intersect_on_parallel_paths(self):
 
         # Two paths A and B are given by two pairs of positions:
         pointA1 = GeoPoint(10, 20, degrees=True)
