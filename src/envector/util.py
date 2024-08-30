@@ -620,9 +620,9 @@ def unit(vector, norm_zero_vector=1, norm_zero_axis=0):
     Examples
     --------
     >>> import envector as nv
-    >>> nv.allclose(nv.unit([[1, 0],[1, 0],[1, 0]]), [[ 0.57735027, 1],
-    ...                                               [ 0.57735027, 0],
-    ...                                               [ 0.57735027, 0]])
+    >>> bool(nv.allclose(nv.unit([[1, 0],[1, 0],[1, 0]]), [[ 0.57735027, 1],
+    ...                                                    [ 0.57735027, 0],
+    ...                                                    [ 0.57735027, 0]]))
     True
     """
     # Scale to avoid overflow

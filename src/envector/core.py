@@ -74,21 +74,21 @@ def lat_lon2n_E(latitude, longitude, R_Ee=None):
     >>> pi = 3.141592653589793
 
     Scalar call
-    >>> nv.allclose(nv.lat_lon2n_E(0, 0), [[1.],
-    ...                                    [0.],
-    ...                                    [0.]])
+    >>> bool(nv.allclose(nv.lat_lon2n_E(0, 0), [[1.],
+    ...                                         [0.],
+    ...                                         [0.]]))
     True
 
     Vectorized call
-    >>> nv.allclose(nv.lat_lon2n_E([0., 0.], [0., pi/2]), [[1., 0.],
-    ...                                                   [0., 1.],
-    ...                                                   [0., 0.]])
+    >>> bool(nv.allclose(nv.lat_lon2n_E([0., 0.], [0., pi/2]), [[1., 0.],
+    ...                                                         [0., 1.],
+    ...                                                         [0., 0.]]))
     True
 
     Broadcasting call
-    >>> nv.allclose(nv.lat_lon2n_E(0., [0, pi/2]), [[1., 0.],
-    ...                                           [0., 1.],
-    ...                                           [0., 0.]])
+    >>> bool(nv.allclose(nv.lat_lon2n_E(0., [0, pi/2]), [[1., 0.],
+    ...                                                  [0., 1.],
+    ...                                                  [0., 0.]]))
     True
 
     See also
@@ -1183,9 +1183,9 @@ def geodesic_distance(n_EA_E, n_EB_E, a=6378137, f=1.0 / 298.257223563, R_Ee=Non
     >>> n_EA_E = nv.lat_lon2n_E(0,0)
     >>> n_EB_E = nv.lat_lon2n_E(*nv.rad(0.5, 179.5))
     >>> s12, az1, az2 = nv.geodesic_distance(n_EA_E, n_EB_E)
-    >>> np.allclose(s12, 19936288.578965)
+    >>> bool(np.allclose(s12, 19936288.578965))
     True
-    >>> np.allclose(nv.deg(az1, az2), (25.67187286829021, 154.32708546994326))
+    >>> bool(np.allclose(nv.deg(az1, az2), (25.67187286829021, 154.32708546994326)))
     True
 
     See also
