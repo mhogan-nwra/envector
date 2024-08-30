@@ -16,8 +16,15 @@ import numpy as np
 from envector import rad, deg, lat_lon2n_E, unit, n_E2lat_lon
 
 
-def _init_earth_plotter(lat, lon):
+def _init_earth_plotter(
+    lat: np.ndarray,
+    lon: np.ndarray
+):
     fig = plt.figure()
+    if not np.isscalar(lat) or lat.size == 1:
+        lat = lat.item()
+    if not np.isscalar(lon) or lon.size == 1:
+        lon = lon.item()
     ax = fig.add_subplot(1, 1, 1, projection=ccrs.Orthographic(int(lon), int(lat)))
     ax.add_feature(cpf.OCEAN, zorder=0)
     ax.add_feature(cpf.LAND, zorder=0, edgecolor='black')
