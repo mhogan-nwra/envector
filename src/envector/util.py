@@ -7,7 +7,7 @@ from __future__ import division, print_function
 
 import functools
 import warnings
-from typing import NamedTuple, Tuple, Union, Any, Literal
+from typing import NamedTuple, Tuple, Union, Any
 
 import numpy as np
 from numpy import rad2deg, deg2rad, ndarray, float64
@@ -726,8 +726,8 @@ select_ellipsoid = deprecate(get_ellipsoid, old_name='select_ellipsoid', new_nam
 
 def unit(
     vector: Union[list, tuple, ndarray],
-    norm_zero_vector: Literal[1, "np.nan"]=1,
-    norm_zero_axis: Literal[0, 1, 2]=0
+    norm_zero_vector: Union[int, float]=1,
+    norm_zero_axis: int=0
 ) -> ndarray:
     """
     Convert input vector to a vector of unit length.
@@ -736,9 +736,9 @@ def unit(
     ----------
     vector : ndarray
         3 x m array (m column vectors)
-    norm_zero_vector : Literal[1, "np.nan"]
-        Defines the fill value used for zero length vectors.
-    norm_zero_axis : Literal[0, 1, 2]
+    norm_zero_vector : int | float
+        Defines the fill value used for zero length vectors. Either 1 or NaN
+    norm_zero_axis : int
         Defines the direction that zero length vectors will point after
         the normalization is done.
 
