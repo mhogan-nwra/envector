@@ -760,6 +760,8 @@ def unit(
     ...                                              [ 0.57735027, 0]]))
     True
     """
+    if not (norm_zero_vector == 1 or np.isnan(norm_zero_vector)):
+        warnings.warn("The `norm_zero_vector` parameter must be either 1 or NaN")
     # Scale to avoid overflow
     unit_vector = np.atleast_1d(vector) / (np.max(np.abs(vector), axis=0, keepdims=True) + _TINY)
 
