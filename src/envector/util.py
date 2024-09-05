@@ -141,17 +141,17 @@ def deprecate(*args, **kwargs):
     return newfunc
 
 
-def eccentricity2(f: float) -> Tuple[float, float]:
+def eccentricity2(f: Union[float, ndarray]) -> Tuple[Union[float, ndarray], Union[float, ndarray]]:
     """Returns the first and second eccentricity squared given the flattening, f.
 
     Parameters
     ----------
-    f : float
+    f : float | ndarray
         Flattening parameter
 
     Returns
     -------
-    tuple[float, float]
+    tuple[float | ndarray, float | ndarray]
         Tuple of the first and second eccentricities, respectively.
 
     Notes
@@ -164,19 +164,22 @@ def eccentricity2(f: float) -> Tuple[float, float]:
     return e2, e2m
 
 
-def polar_radius(a: float, f: float) -> float:
+def polar_radius(
+    a: Union[float, ndarray],
+    f: Union[float, ndarray]
+) -> Union[float, ndarray]:
     """Returns the polar radius b given the equatorial radius a and flattening f of the ellipsoid.
 
     Parameters
     ----------
-    a : float
+    a : float | ndarray
         Equatorial radius
-    f : float
+    f : float | ndarray
         Flattening parameter
 
     Returns
     -------
-    float
+    float | ndarray
         Polar radius :math:`b`
 
     Notes
@@ -190,17 +193,17 @@ def polar_radius(a: float, f: float) -> float:
     return b
 
 
-def third_flattening(f: float) -> float:
+def third_flattening(f: Union[float, ndarray]) -> Union[float, ndarray]:
     """Returns the third flattening, n, given the flattening, f.
 
     Parameters
     ----------
-    f : float
+    f : float | ndarray
         Flattening parameter
 
     Returns
     -------
-    float
+    float | ndarray
         Polar radius :math:`n`
 
     Notes
