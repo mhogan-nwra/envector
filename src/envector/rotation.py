@@ -4,11 +4,15 @@ Module related to rotation matrices and angles
 
 """
 from __future__ import division, print_function
+
+from typing import Tuple, Union
+
 import numpy as np
-from numpy import arctan2, sin, cos, array, sqrt
+from numpy import arctan2, sin, cos, array, sqrt, ndarray
+
+from envector import license as _license
 from envector._common import test_docstrings, _make_summary
 from envector.util import mdot, unit, norm, _nvector_check_length
-from envector import license as _license
 
 __all__ = ['E_rotation',
            'n_E_and_wa2R_EL',
@@ -27,18 +31,19 @@ E_ROTATION_MATRIX = dict(e=np.array([[0, 0, 1.0],
                                      [0, 1.0, 0],
                                      [-1.0, 0, 0]]),
                          E=np.eye(3))
+"""Rotation matrix defining the axes of the coordinate frame E."""
 
 # pylint: disable=invalid-name
 
 
-def E_rotation(axes='e'):
+def E_rotation(axes: str='e') -> ndarray:
     """
     Returns rotation matrix R_Ee defining the axes of the coordinate frame E.
 
     Parameters
     ----------
-    axes : 'e' or 'E'
-        defines orientation of the axes of the coordinate frame E.
+    axes : str
+        Either 'e' or 'E'. Defines orientation of the axes of the coordinate frame E.
         If axes is 'e' then z-axis points to the North Pole along the Earth's
         rotation axis, x-axis points towards the point where latitude = longitude = 0.
         If axes is 'E' then x-axis points to the North Pole along the Earth's
@@ -46,8 +51,8 @@ def E_rotation(axes='e'):
 
     Returns
     -------
-    R_Ee : 3 x 3 array
-        rotation matrix defining the axes of the coordinate frame E as
+    ndarray
+        3 x 3 array rotation matrix defining the axes of the coordinate frame E as
         described in Table 2 in Gade (2010).
 
     Notes
@@ -86,7 +91,9 @@ def E_rotation(axes='e'):
     return E_ROTATION_MATRIX[axes]
 
 
-def R2xyz(R_AB):
+def R2xyz(
+    R_AB: ndarray
+) -> Tuple[Tuple[ndarray, ndarray], Tuple[ndarray, ndarray], Tuple[ndarray, ndarray]]:
     """
     Returns the Euler angles in the xyz-order from a rotation matrix.
 
@@ -403,14 +410,17 @@ def zyx2R(z, y, x):
     return np.squeeze(R_AB)
 
 
-def n_E2lat_lon(n_E, R_Ee=None):
+def n_E2lat_lon(
+    n_E: ndarray,
+    R_Ee: Union[list, tuple, ndarray, None]=None
+) -> Tuple[ndarray, ndarray]:
     """
     Converts n-vector to latitude and longitude.
 
     Parameters
     ----------
-    n_E: 3 x n array
-        n-vector [no unit] decomposed in E.
+    n_E : ndarray
+        3 x n array n-vector [no unit] decomposed in E.
     R_Ee : 3 x 3 array
         rotation matrix defining the axes of the coordinate frame E.
 
@@ -443,7 +453,10 @@ def n_E2lat_lon(n_E, R_Ee=None):
     return latitude, longitude
 
 
-def change_axes_to_E(n_E, R_Ee=None):
+def change_axes_to_E(
+    n_E: ndarray,
+    R_Ee: Union[list, tuple, ndarray, None]=None
+) -> ndarray:
     """
     Change axes of the nvector from 'e' to 'E'.
 
@@ -475,21 +488,24 @@ def change_axes_to_E(n_E, R_Ee=None):
     return n_e
 
 
-def n_E2R_EN(n_E, R_Ee=None):
+def n_E2R_EN(
+    n_E: ndarray,
+    R_Ee: Union[list, tuple, ndarray, None]=None
+) -> ndarray:
     """
     Returns the rotation matrix R_EN from n-vector.
 
     Parameters
     ----------
-    n_E: 3 x n array
-        n-vector [no unit] decomposed in E
-    R_Ee : 3 x 3 array
-        rotation matrix defining the axes of the coordinate frame E.
+    n_E: ndarray
+        3 x n array n-vector [no unit] decomposed in E
+    R_Ee : list | tuple | ndarray | None
+        Optional 3 x 3 rotation matrix defining the axes of the coordinate frame E.
 
     Returns
     -------
-    R_EN:  3 x 3 x n array
-        The resulting rotation matrix [no unit] (direction cosine matrix).
+    ndarray
+        3 x 3 x n array resulting rotation matrix [no unit] (direction cosine matrix).
 
     See also
     --------
