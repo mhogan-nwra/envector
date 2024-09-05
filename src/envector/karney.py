@@ -1,4 +1,4 @@
-'''
+"""
 Created on 13. aug. 2021
 
 References
@@ -12,18 +12,21 @@ C. F. F. Karney, "Geodesics on an ellipsoid of revolution",
 
 
 @author: pab
-'''
+"""
+
 import warnings
+from typing import Union, Tuple, List, Callable
+
 import numpy as np
-from numpy import arctan2, sin, cos, tan, arctan, sqrt
+from numpy import arctan2, sin, cos, tan, arctan, sqrt, ndarray, float64
+
 # from scipy.special import ellipeinc, ellipkinc  # pylint: disable=no-name-in-module
 from envector.util import nthroot, eccentricity2, third_flattening, polar_radius
 
 TINY = 1e-150
-
-# A1 coefficients defined in eq. 17 in Karney:
+"""A tiny number"""
 A1_COEFFICIENTS = (1. / 256, 1. / 64., 1. / 4., 1.)
-# C1 coefficients defined in eq. 18 in Karney:
+"""A1 coefficients defined in eq. 17 in Karney:"""
 C1_COEFFICIENTS = (
     (-1. / 32., 3. / 16., -1. / 2, ),  # C11
     (-9. / 2048., 1. / 32., -1. / 16.),  # C12
@@ -32,7 +35,7 @@ C1_COEFFICIENTS = (
     (-7. / 1280.,),  # C15
     (-7. / 2048.,),  # C16
 )
-# CM1 coefficients defined in eq. 21 in Karney:
+"""C1 coefficients defined in eq. 18 in Karney:"""
 CM1_COEFFICIENTS = (
     (205. / 1536., -9. / 32., 1. / 2, ),  # CM11
     (1335. / 4096, -37. / 96., 5. / 16.),  # CM12
@@ -41,10 +44,9 @@ CM1_COEFFICIENTS = (
     (3467. / 7680.,),  # CM15
     (38081. / 61440.,)  # CM16
 )
-
-# A2 coefficients defined in eq. 42 in Karney:
+"""CM1 coefficients defined in eq. 21 in Karney:"""
 A2_COEFFICIENTS = (25. / 256., 9. / 64., 1./4., 1)
-# C2 coefficients defined in eq. 43 in Karney:
+"""A2 coefficients defined in eq. 42 in Karney:"""
 C2_COEFFICIENTS = (
     (1. / 32., 1. / 16., 1./2.),  # C21
     (35. / 2048, 1./32., 3. / 16.),  # C22
@@ -53,16 +55,16 @@ C2_COEFFICIENTS = (
     (63. / 1280.,),  # C25
     (77. / 2048.,),  # C26
 )
-
-# A3 coefficients defined in eq. 24 in Karney:
+"""C2 coefficients defined in eq. 43 in Karney:"""
 A3_COEFFICIENTS = (
     (-3. / 128.,),
     (-2. / 64., -3. / 64.),
     (-1. / 16., -3. / 16., -1. / 16.),
     (3. / 8., -1. / 8., -1. / 4.),
     (1. / 2., -1. / 2., ),
-    (1., ))
-# C3 coefficients defined in eq. 25 in Karney:
+    (1., )
+)
+"""A3 coefficients defined in eq. 24 in Karney:"""
 C3_COEFFICIENTS = (
     ((3, 128.), (2, 5, 128.), (-1, 3, 3, 64.), (-1, 0, 1, 8.), (-1, 1, 4.)),  # C_31
     ((5, 256.), (1, 3, 128.), (-3, -2, 3, 64.), (1, -3, 2, 32.)),  # C_32
@@ -70,9 +72,13 @@ C3_COEFFICIENTS = (
     ((7, 512.), (-14, 7, 512.)),  # C_34
     ((21, 2560.),),  # C_35
 )
+"""C3 coefficients defined in eq. 25 in Karney:"""
 
 
-def __astroid(x, y):
+def __astroid(
+    x: ndarray,
+    y: ndarray
+) -> ndarray:
     """
     ASTROID  Solve the astroid equation
 
@@ -113,7 +119,11 @@ def __astroid(x, y):
     return k
 
 
-def _astroid(x, y, f):
+def _astroid(
+    x: ndarray,
+    y: ndarray,
+    f: ndarray
+) -> ndarray:
     m_u = __astroid(x, y)
     # Oblate solution
     alpha1o = np.where(y == 0,
@@ -129,7 +139,11 @@ def _astroid(x, y, f):
     return alpha11
 
 
-def _eval_cij_coefs(coefficients, epsi, squared=True):
+def _eval_cij_coefs(
+    coefficients: Union[Tuple[tuple, ...], List[list]],
+    epsi: ndarray,
+    squared: bool=True
+) -> List[ndarray]:
     epsi2 = epsi**2 if squared else epsi
     factor = 1.0
     c1x = []
@@ -139,22 +153,26 @@ def _eval_cij_coefs(coefficients, epsi, squared=True):
     return c1x
 
 
-def _cosinesum(c, x, sine=True):
+def _cosinesum(
+    c: Union[list, tuple, ndarray],
+    x: ndarray,
+    sine: bool=True
+):
     """
     Returns the sum of the sine or cosine series using Clenshaw algorithm.
 
     Parameters
     ----------
-    c : list
+    c : list | tuple | ndarray
         sine or cosine series coefficients
-    x : array-like
+    x : ndarray
         argument to the sine or cosine series.
-    sine: bool
+    sine : bool
         If True the sine series sum is returned otherwise the cosine series sum.
 
     Returns
     -------
-    y : array-like
+    ndarray
         If sine is True y = sum c[i-1] * sin( 2*i * x)
         otherwise y = sum c[i-1] * cos((2*i-1) * x) for i = 1, .... n
     """
@@ -179,46 +197,65 @@ def _cosinesum(c, x, sine=True):
     return cosx * (y_0 - y_1)
 
 
-def _a3_coefs(n):
+def _a3_coefs(n: Union[int, float]) -> list:
     """
     Returns the A3 coefficients defined in Eq. 24 in Karney evaluated at n.
 
     Parameters
     ----------
-    n: real scalar
+    n: int | float
         third flattening of the ellipsoid
+
+    Returns
+    -------
+    list
+        Nested evaluated polynomial
     """
     return [np.polyval(c, n) for c in A3_COEFFICIENTS]
 
 
-def _c3_coefs(n):
+def _c3_coefs(n: Union[int, float]) -> List[list]:
     """
     Returns the C3 coefficients defined in Eq. 25 in Karney evaluated at n.
 
     Parameters
     ----------
-    n: real scalar
+    n: int | float
         third flattening of the ellipsoid
+
+    Returns
+    -------
+    list[list]
+        Doubly-nested evaluated polynomial
     """
     return [[np.polyval(c[:-1], n) / c[-1] for c in coefs]
             for coefs in C3_COEFFICIENTS]
 
 
-def _get_i3_fun(epsi, n=None, a3_coefs=None, c3_coefs=None):
+def _get_i3_fun(
+    epsi: ndarray,
+    n: Union[int, float, None]=None,
+    a3_coefs: Union[list, None]=None,
+    c3_coefs: Union[List[list], None]=None
+) -> Callable[[ndarray], ndarray]:
     """
     Returns the I3 integral function defined in equation 8 in Karney
 
     Parameters
     ----------
-    epsi: array-like
+    epsi : ndarray
         normalized equatorial azimuth
-    n: real scalar
-        third flattening of the ellipsoid
+    n : int | float | None
+        Optional third flattening of the ellipsoid
+    a3_coefs : list | None
+        Optional evaluated A3 polynomial coefficients. Populated if `n` is not None
+    c3_coefs : list[list] | None
+        Optional evaluated C3 polynomial coefficients. Populated if `n` is not None
 
     Returns
     -------
-    i3fun : callable
-        Integral function I3(sigma)
+    (ndarray) -> ndarray
+        Callable integral function I3(sigma)
 
     Notes
     -----
@@ -256,19 +293,30 @@ def _get_i3_fun(epsi, n=None, a3_coefs=None, c3_coefs=None):
     return i3fun
 
 
-def _get_i1_fun(epsi, return_inverse=True):
+def _get_i1_fun(
+    epsi: ndarray,
+    return_inverse: bool=True
+) -> Union[
+        Callable[[ndarray], ndarray],
+        Tuple[
+            Callable[[ndarray], ndarray],
+            Callable[[ndarray], ndarray]
+        ]
+]:
     """
-    Returns the I1 integral function defined in equation 7 in Karney
+    Returns the I1 integral and its inverse function(s) defined in equation 7 in Karney
 
     Parameters
     ----------
-    epsi: array-like
+    epsi : ndarray
         normalized equatorial azimuth
+    return_inverse : bool
+        If True, returns both I1 and its inverse function callables. Else just return a single callable (default = True)
 
     Returns
     -------
-    i1fun : callable
-        Integral function I1(sigma)
+    (ndarray) -> ndarray | tuple[(ndarray) -> ndarray, (ndarray) -> ndarray]
+        Either a callable integral function I1(sigma) if `return_inverse` is True else a 2-tuple of callables
 
     Notes
     -----
@@ -298,7 +346,7 @@ def _get_i1_fun(epsi, return_inverse=True):
     a_1 = np.polyval(A1_COEFFICIENTS, epsi**2) / (1.0 - epsi)  # Eq 17
     c1x = _eval_cij_coefs(C1_COEFFICIENTS, epsi, squared=True)  # Eq 18
 
-    def i1fun(sigma):
+    def i1fun(sigma: ndarray) -> ndarray:
         """The I1 function"""
         return a_1 * (sigma + _cosinesum(c1x, sigma, sine=True))
 
@@ -307,7 +355,7 @@ def _get_i1_fun(epsi, return_inverse=True):
 
     cm1x = _eval_cij_coefs(CM1_COEFFICIENTS, epsi, squared=True)  # Eq. 21
 
-    def invi1fun(sdb):
+    def invi1fun(sdb: ndarray) -> ndarray:
         """The inverse of I1 function"""
         tau = sdb / a_1
         return tau + _cosinesum(cm1x, tau, sine=True)
@@ -332,7 +380,20 @@ def _get_i1_fun(epsi, return_inverse=True):
     return i1fun, invi1fun
 
 
-def _get_jfun(epsi):
+def _get_jfun(epsi: ndarray) -> Callable[[ndarray], ndarray]:
+    """Return the callable J-function defined as J(x) = I1(x) - I2(x)
+
+    Parameters
+    ----------
+    epsi : ndarray
+        Normalized equatorial azimuth
+
+    Returns
+    -------
+    (ndarray) -> ndarray
+        J-function callable
+
+    """
     epsi2 = epsi**2
 
     epsim1 = 1.0 - epsi
@@ -344,7 +405,7 @@ def _get_jfun(epsi):
     c2x = _eval_cij_coefs(C2_COEFFICIENTS, epsi, squared=True)  # Eq 43
     c1m2x = a_1*np.array(c1x) - a_2*np.array(c2x)
 
-    def jfun(sigma):
+    def jfun(sigma: ndarray) -> ndarray:
         """The J function defined as I1(sigma)-I2(sigma)"""
         return a1m2 * sigma + _cosinesum(c1m2x, sigma, sine=True)
 
@@ -357,13 +418,13 @@ def _get_jfun(epsi):
     return jfun
 
 
-def truncate_small(x, small=0.06):
+def truncate_small(x: Union[int, float, ndarray], small: float=0.06) -> ndarray:
     """Truncate tiny values to zero"""
     y = np.where(np.abs(x) < small, small - (small - x), x)
     return np.where(x == 0, 0, y)
 
 
-def normalize_angle(angle):
+def normalize_angle(angle: Union[int, float, ndarray]) -> ndarray:
     """Normalize angle to range (-pi, pi]"""
     mask = np.isfinite(angle)
     nangle = np.copy(angle)
@@ -371,7 +432,10 @@ def normalize_angle(angle):
     return np.where(nangle <= -np.pi, np.pi, nangle)
 
 
-def _normalize_equatorial_azimuth(cos_alpha0, e2m):
+def _normalize_equatorial_azimuth(
+    cos_alpha0: Union[int, float, ndarray],
+    e2m: Union[int, float, ndarray]
+) -> ndarray:
     """
     Normalize the equatorial azimuth, alpha0, given the second eccentricity squared, e2m.
     """
@@ -381,13 +445,20 @@ def _normalize_equatorial_azimuth(cos_alpha0, e2m):
     return epsi
 
 
-def _solve_triangle_nea_direct(lat1, alpha1, f):
+def _solve_triangle_nea_direct(
+    lat1: Union[int, float, ndarray],
+    alpha1: Union[int, float, ndarray],
+    f: float
+) -> Tuple[ndarray, ndarray, ndarray, ndarray]:
     """Returns alpha0, sigma1, w1, cos(alpha0), sin(alpha0)"""
     blat1 = arctan((1 - f) * tan(truncate_small(lat1)))  # Eq. 6
     return _solve_triangle_nea(blat1, alpha1)
 
 
-def _solve_triangle_nea(blat1, alpha1):
+def _solve_triangle_nea(
+    blat1: ndarray,
+    alpha1: ndarray
+) -> Tuple[ndarray, ndarray, ndarray, ndarray]:
     cos_alpha1, sin_alpha1 = cos(alpha1), sin(alpha1)
     cos_blat1, sin_blat1 = cos(blat1)+TINY, sin(blat1)
     sin_alpha0 = sin_alpha1 * cos_blat1  # Eq. 5
@@ -398,7 +469,11 @@ def _solve_triangle_nea(blat1, alpha1):
     return sigma1, w_1, cos_alpha0, sin_alpha0
 
 
-def _solve_triangle_neb_direct(sigma2, cos_alpha0, sin_alpha0):
+def _solve_triangle_neb_direct(
+    sigma2: ndarray,
+    cos_alpha0: ndarray,
+    sin_alpha0: ndarray
+) -> Tuple[ndarray, ndarray, ndarray]:
     """Returns alpha2, blat2, w_2"""
     cos_sigma2, sin_sigma2 = cos(sigma2), sin(sigma2)
     sin_blat2 = cos_alpha0 * sin_sigma2
@@ -409,7 +484,13 @@ def _solve_triangle_neb_direct(sigma2, cos_alpha0, sin_alpha0):
     return alpha2, blat2, w_2
 
 
-def _solve_triangle_neb(cos_blat1, cos_blat2, sin_blat2, sin_alpha0, alpha1):
+def _solve_triangle_neb(
+    cos_blat1: ndarray,
+    cos_blat2: ndarray,
+    sin_blat2: ndarray,
+    sin_alpha0: ndarray,
+    alpha1: ndarray
+) -> Tuple[ndarray, ndarray, ndarray]:
     # sgn is -1 to make sure sigma2==pi for antipodal points on equator:
     sgn = np.where((sin_blat2 == 0) & (cos_blat1 == 1), -1, 1)
     cos_alpha2_cos_blat2 = sgn*np.sqrt(cos(alpha1)**2 * cos_blat1**2
@@ -424,24 +505,31 @@ def _solve_triangle_neb(cos_blat1, cos_blat2, sin_blat2, sin_alpha0, alpha1):
     return sigma2, w_2, alpha2
 
 
-def sphere_distance_rad(lat1, lon1, lat2, lon2):
-    """
-    Returns surface distance between positions A and B as well as the azimuths.
+def sphere_distance_rad(
+    lat1: Union[int, float, ndarray],
+    lon1: Union[int, float, ndarray],
+    lat2: Union[int, float, ndarray],
+    lon2: Union[int, float, ndarray],
+) -> Tuple[Union[float64, ndarray], Union[float64, ndarray], Union[float64, ndarray]]:
+    """Returns surface distance between positions A and B as well as the azimuths.
 
     Parameters
     ----------
-    lat1, lon1: real scalars or vectors of length m.
-        latitude(s) and longitude(s) [rad] of position A.
-    lat2, lon2: real scalars or vectors of length n.
-        latitude(s) and longitude(s) [rad] of position B.
+    lat1 : int | float | ndarray
+        Real scalars or vectors of length m latitude(s) [rad] of position A.
+    lon1 : int | float | ndarray
+        Real scalars or vectors of length m longitude(s) [rad] of position A.
+    lat2 : int | float | ndarray
+        Real scalars or vectors of length n latitude(s) [rad] of position B.
+    lon2 : int | float | ndarray
+        Real scalars or vectors of length n longitude(s) [rad] of position B.
 
     Returns
     -------
-    distance:  real scalars or vectors of length max(m,n).
-        Surface distance [rad] from A to B on the sphere
-    azimuth_a, azimuth_b: real scalars or vectors of length max(m,n).
-        direction [rad] of line at position A and B relative to
-        North, respectively.
+    tuple[float64 | ndarray, float64 | ndarray, float64 | ndarray]
+        `(distance_rad, azimuth_a, azimuth_b)`  of real scalars or vectors of length max(m,n) where `distance_rad` is
+        the surface distance [rad] from A to B on the sphere and `azimuth_a` and `azimuth_b` are the directions [rad]
+        of line at position A and B relative to North, respectively.
 
     Notes
     -----
@@ -451,7 +539,6 @@ def sphere_distance_rad(lat1, lon1, lat2, lon2):
     See also
     --------
     geodesic_distance
-
     """
     w = lon2 - lon1
     cos_b1, sin_b1 = cos(lat1), sin(lat1)
@@ -472,25 +559,33 @@ def sphere_distance_rad(lat1, lon1, lat2, lon2):
     return distance_rad, azimuth_a, azimuth_b
 
 
-def geodesic_reckon(lat_a, lon_b, distance, azimuth, a=6378137, f=1.0 / 298.257223563,
-                    long_unroll=False):
-    """
-    Returns position B computed from position A, distance and azimuth.
+def geodesic_reckon(
+    lat_a: Union[int, float, list, tuple, ndarray],
+    lon_a: Union[int, float, list, tuple, ndarray],
+    distance: Union[int, float, list, tuple, ndarray],
+    azimuth: Union[int, float, list, tuple, ndarray],
+    a: float=6378137.,
+    f: float=1.0 / 298.257223563,
+    long_unroll: bool=False
+) -> Tuple[Union[float, ndarray], Union[float, ndarray], Union[float, ndarray]]:
+    """Returns position B computed from position A, distance and azimuth.
 
     Parameters
     ----------
-    lat_a, lon_b: real scalars or vectors of length k.
-        latitude(s) and longitude(s) of position A.
-    distance: real scalar or vector of length m.
-        ellipsoidal distance [m] between position A and B.
-    azimuth: real scalar or vector of length n.
-        azimuth [rad] of line at position A.
-    a: real scalar, default WGS-84 ellipsoid.
-        Semi-major half axis of the Earth ellipsoid given in [m].
-    f: real scalar, default WGS-84 ellipsoid.
+    lat_a : int | float | list | tuple | ndarray
+        Scalar or length k array vectors of latitude of position A.
+    lon_a : int | float | list | tuple | ndarray
+        Scalar or length k array vectors of longitude of position A.
+    distance : int | float | list | tuple | ndarray
+        Scalar or length m array vectors of ellipsoid distance [m] between position A and B.
+    azimuth : int | float | list | tuple | ndarray
+        Scalar or length n array vector azimuth [rad] of line at position A.
+    a : float
+        Semi-major axis of the Earth ellipsoid given in [m], default WGS-84 ellipsoid.
+    f : float
         Flattening [no unit] of the Earth ellipsoid. If f==0 then spherical
-        Earth with radius a is used in stead of WGS-84.
-    long_unroll: bool
+        Earth with radius a is used in stead of WGS-84, default WGS-84 ellipsoid.
+    long_unroll : bool
         Controls the treatment of longitude. If it is False then the lon2
         is reduced to the range [-180, 180). If it is True, then (lon2 - lon1)
         determines how many times and in what sense the geodesic has encircled
@@ -498,17 +593,13 @@ def geodesic_reckon(lat_a, lon_b, distance, azimuth, a=6378137, f=1.0 / 298.2572
 
     Returns
     -------
-    lat2, lon2:  arrays of length max(k,m,n).
-        latitude(s) and longitude(s) of position B.
-    azimuth_b: real scalars or vectors of length max(k,m,n).
-        azimuth [rad] of line at position B.
+    tuple[float | ndarray, float | ndarray, float | ndarray]
+        `(lat2, lon2, alpha2)` where  `lat2` and `lon2` are arrays of length max(k,m,n) for the latitude and longitude
+        of position B and `alpha2` is a real scalar or array vectors of length max(k,m,n) of the azimuth [rad] of.
+        line at position B.
 
-    Examples
-    --------
-    >>> import numpy as np
-    >>> import envector as nv
     """
-    lat1, lon1, distance, az1, a = np.broadcast_arrays(lat_a, lon_b, distance, azimuth, a)
+    lat1, lon1, distance, az1, a = np.broadcast_arrays(lat_a, lon_a, distance, azimuth, a)
     alpha1 = truncate_small(az1)
     sigma1, w_1, cos_alpha0, sin_alpha0 = _solve_triangle_nea_direct(lat1, alpha1, f)
 
@@ -546,7 +637,15 @@ def geodesic_reckon(lat_a, lon_b, distance, azimuth, a=6378137, f=1.0 / 298.2572
     return lat2, lon2, alpha2
 
 
-def _solve_alpha1(alpha1, blat1, blat2, true_lamda12, a, f, tol=1e-15):
+def _solve_alpha1(
+    alpha1: Union[float, ndarray],
+    blat1: Union[float, ndarray],
+    blat2: Union[float, ndarray],
+    true_lamda12: Union[float, ndarray],
+    a: Union[float, ndarray],
+    f: Union[float, ndarray],
+    tol: float=1e-15
+) -> ndarray:
     b = polar_radius(a, f)
     eta = third_flattening(f)
     e_2, e2m = eccentricity2(f)
@@ -554,7 +653,7 @@ def _solve_alpha1(alpha1, blat1, blat2, true_lamda12, a, f, tol=1e-15):
     sin_blat1, cos_blat1 = sin(blat1)-TINY, cos(blat1)
     sin_blat2, cos_blat2 = sin(blat2), cos(blat2)
 
-    def _newton_step(alpha1):
+    def _newton_step(alpha1: ndarray) -> Tuple[ndarray, ndarray]:
         """ See table 5 in Karney"""
         sigma1, w_1, cos_alpha0, sin_alpha0 = _solve_triangle_nea(blat1, alpha1)
 
@@ -608,7 +707,11 @@ def _solve_alpha1(alpha1, blat1, blat2, true_lamda12, a, f, tol=1e-15):
     return alpha1
 
 
-def _canonical(blat1, blat2, lamda12):
+def _canonical(
+    blat1: ndarray,
+    blat2: ndarray,
+    lamda12: ndarray,
+) -> Tuple[ndarray, ndarray, ndarray, Callable[[ndarray, ndarray], Tuple[ndarray, ndarray]]]:
     """Return canonical problem where blat1 <=0, blat1 <= blat2 <= -blat1 and 0<=lamda12<=pi. """
     blat1, blat2 = truncate_small(blat1), truncate_small(blat2)
     swap_bmask = np.abs(blat1) < np.abs(blat2)
@@ -622,7 +725,7 @@ def _canonical(blat1, blat2, lamda12):
 
     swap_alpha = np.logical_xor(swap_bmask, negate_blat11)
 
-    def restore(alpha1, alpha2):
+    def restore(alpha1: ndarray, alpha2: ndarray) -> Tuple[ndarray, ndarray]:
         """Restore computed values"""
         az1, az2 = np.where(swap_bmask, alpha2, alpha1), np.where(swap_bmask, alpha1, alpha2)
         az1, az2 = np.where(swap_alpha, np.pi-az1, az1), np.where(swap_alpha, np.pi-az2, az2)
@@ -634,29 +737,41 @@ def _canonical(blat1, blat2, lamda12):
     return blat11, blat22, true_lamda,  restore
 
 
-def geodesic_distance(lat_a, lon_a, lat_b, lon_b, a=6378137, f=1.0 / 298.257223563):
-    """
-    Returns surface distance between positions A and B on an ellipsoid.
+def geodesic_distance(
+    lat_a: Union[int, float, list, tuple, ndarray],
+    lon_a: Union[int, float, list, tuple, ndarray],
+    lat_b: Union[int, float, list, tuple, ndarray],
+    lon_b: Union[int, float, list, tuple, ndarray],
+    a: float=6378137.,
+    f: float=1.0 / 298.257223563
+) -> Tuple[Union[float, ndarray], Union[float, ndarray], Union[float, ndarray]]:
+    """Returns surface distance between positions A and B on an ellipsoid.
 
     Parameters
     ----------
-    lat_a, lon_a: real scalars or vectors of length m.
-        latitude(s) and longitude(s) of position A.
-    lat_b, lon_b: real scalars or vectors of length n.
-        latitude(s) and longitude(s) of position B.
-    a: real scalar, default WGS-84 ellipsoid.
-        Semi-major axis of the Earth ellipsoid given in [m].
-    f: real scalar, default WGS-84 ellipsoid.
+    lat_a : int | float | list | tuple | ndarray
+        Scalar or length m array vectors of latitude of position A.
+    lon_a : int | float | list | tuple | ndarray
+        Scalar or length m array vectors of longitude of position A.
+    lat_b : int | float | list | tuple | ndarray
+        Scalar or length n array vectors of latitude of position B.
+    lon_b : int | float | list | tuple | ndarray
+        Scalar or length n array vectors of longitude of position B.
+    a : float
+        Semi-major axis of the Earth ellipsoid given in [m], default WGS-84 ellipsoid.
+    f : float
         Flattening [no unit] of the Earth ellipsoid. If f==0 then spherical
-        Earth with radius a is used in stead of WGS-84.
+        Earth with radius a is used in stead of WGS-84, default WGS-84 ellipsoid.
 
     Returns
     -------
-    distance:  real scalars or vectors of length max(m,n).
-        Surface distance [m] from A to B on the ellipsoid
-    azimuth_a, azimuth_b: real scalars or vectors of length max(m,n).
-        direction [rad or deg] of line at position a and b relative to
-        North, respectively.
+    tuple[float | ndarray, float | ndarray, float | ndarray]
+        `(s12, az1, az2)`
+        distance:  real scalars or vectors of length max(m,n).
+            Surface distance [m] from A to B on the ellipsoid
+        azimuth_a, azimuth_b: real scalars or vectors of length max(m,n).
+            direction [rad or deg] of line at position a and b relative to
+            North, respectively.
 
     Notes
     -----
@@ -683,7 +798,7 @@ def geodesic_distance(lat_a, lon_a, lat_b, lon_b, a=6378137, f=1.0 / 298.2572235
     cos_blat1 = cos(blat1) + TINY
     sin_blat2, cos_blat2 = sin(blat2), cos(blat2)+TINY
 
-    def vincenty():
+    def vincenty() -> Tuple[ndarray, ndarray, ndarray, ndarray]:
         """See table 3 in Karney"""
         wbar = sqrt(1 - e_2 * (0.5 * (cos_blat1 + cos_blat2))**2)  # Eq. 48
         w12 = true_lamda12 / wbar
@@ -692,7 +807,7 @@ def geodesic_distance(lat_a, lon_a, lat_b, lon_b, a=6378137, f=1.0 / 298.2572235
         s12 = a * wbar * sigma12
         return s12, alpha1, alpha2, sigma12
 
-    def _solve_astroid():
+    def _solve_astroid() -> ndarray:
         """See table 4 in Karney"""
         delta = np.where(f == 0, 1, np.abs(f * np.pi * cos_blat1**2))
 
@@ -703,7 +818,7 @@ def geodesic_distance(lat_a, lon_a, lat_b, lon_b, a=6378137, f=1.0 / 298.2572235
 
         return alpha11
 
-    def _solve_hybrid(alpha1):
+    def _solve_hybrid(alpha1: ndarray) -> Tuple[ndarray, ndarray]:
         """See table 6 in Karney"""
         sigma1, w_1, cos_alpha0, sin_alpha0 = _solve_triangle_nea(blat1, alpha1)
 
