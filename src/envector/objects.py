@@ -79,7 +79,13 @@ def delta_E(point_a, point_b):
     p_AB_E = p_EB_E - p_EA_E
     return p_AB_E
 
-diff_positions = deprecate(delta_E, old_name='diff_positions', new_name='delta_E')
+
+diff_positions = deprecate(
+    delta_E,
+    old_name='diff_positions',
+    new_name='delta_E',
+    message="Will be removed by version 1.0.0"
+)
 
 
 def _base_angle(angle_rad: Union[int, float, float64, ndarray]) -> Union[float64, ndarray]:
