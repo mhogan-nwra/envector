@@ -1192,7 +1192,10 @@ def _azimuth_sphere(
     return np.arctan2(sin_az1, cos_az1), np.arctan2(sin_az2, cos_az2)
 
 
-def great_circle_distance_rad(n_EA_E, n_EB_E, R_Ee=None):
+def great_circle_distance_rad(
+    n_EA_E: ndarray,
+    n_EB_E: ndarray,
+) -> ndarray:
     """
     Returns great circle distance in radians between positions A and B on a sphere
 
@@ -1220,8 +1223,6 @@ def great_circle_distance_rad(n_EA_E, n_EB_E, R_Ee=None):
     --------
     great_circle_distance
     """
-    if R_Ee is None:
-        R_Ee = E_rotation()
     n_EA_E, n_EB_E = np.atleast_2d(n_EA_E, n_EB_E)
 
     sin_theta = norm(np.cross(n_EA_E, n_EB_E, axis=0), axis=0)
