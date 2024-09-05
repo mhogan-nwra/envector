@@ -16,8 +16,8 @@ from numpy.linalg import norm
 from envector import license as _license
 from envector._common import test_docstrings, _make_summary
 
-__all__ = ['deg', 'rad', 'mdot', 'nthroot', 'get_ellipsoid', 'select_ellipsoid', 'unit',
-           'allclose', 'eccentricity2', 'polar_radius', 'third_flattening', 'deprecate']
+__all__ = ['deg', 'rad', 'mdot', 'nthroot', 'get_ellipsoid', 'select_ellipsoid', 'unit', 'isclose',
+           'allclose', 'eccentricity2', 'polar_radius', 'third_flattening', 'deprecate', 'array_to_list_dict']
 
 FINFO = np.finfo(float)
 _tiny_name = 'tiny' if np.__version__ < '1.22' else 'smallest_normal'

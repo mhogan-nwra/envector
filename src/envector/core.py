@@ -50,6 +50,8 @@ __all__ = ['closest_point_on_great_circle',
            'n_EA_E_and_n_EB_E2azimuth',
            'on_great_circle',
            'on_great_circle_path',
+           'E_rotation',
+           '_interp_vectors'
            ]
 
 
