@@ -171,11 +171,15 @@ class _Common:
     def __eq__(self, other):
         try:
             return self is other or self._is_equal_to(other, rtol=1e-12, atol=1e-14)
-        except AttributeError:
+        except (AttributeError, NotImplementedError):
             return False
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def _is_equal_to(self, other: Any, rtol: float, atol: float) -> bool:
+        """Compares another object attributes of the same type"""
+        raise NotImplementedError
 
 
 class GeoPoint(_Common):
