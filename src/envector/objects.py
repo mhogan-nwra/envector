@@ -949,7 +949,8 @@ class Nvector(_Common):
 
     mean_horizontal_position = deprecate(mean,
                                          old_name='mean_horizontal_position',
-                                         new_name='mean')
+                                         new_name='mean',
+                                         message="Will be removed in version 1.0.0")
 
     def _is_equal_to(self, other, rtol=1e-12, atol=1e-14):
         options = dict(rtol=rtol, atol=atol)
