@@ -1363,7 +1363,8 @@ class GeoPath:
 
     intersection = deprecate(intersect,
                              old_name='intersection',
-                             new_name='intersect')
+                             new_name='intersect',
+                             message="Will remove in version 1")
 
     def _on_ellipsoid_path(self, point, rtol=1e-6, atol=1e-8):
         point_a, point_b = self.geo_points()
