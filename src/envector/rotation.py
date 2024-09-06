@@ -93,21 +93,22 @@ def E_rotation(axes: str='e') -> ndarray:
 
 def R2xyz(
     R_AB: ndarray
-) -> Tuple[Tuple[ndarray, ndarray], Tuple[ndarray, ndarray], Tuple[ndarray, ndarray]]:
+) -> Tuple[Union[float64, ndarray], Union[float64, ndarray], Union[float64, ndarray]]:
     """
     Returns the Euler angles in the xyz-order from a rotation matrix.
 
     Parameters
     ----------
-    R_AB: 3 x 3 x n array
-        rotation matrix [no unit] (direction cosine matrix) such that the
+    R_AB : ndarray
+        3 x 3 x n array rotation matrix [no unit] (direction cosine matrix) such that the
         relation between a vector v decomposed in A and B is given by:
         v_A = mdot(R_AB, v_B)
 
     Returns
     -------
-    x, y, z: real scalars or array of length n.
-        Angles [rad] of rotation about new axes.
+    tuple[float64 | ndarray, float64 | ndarray, float64 | ndarray]
+        `(x, y, z)`: real scalars or array of length n.
+            Angles [rad] of rotation about new axes.
 
     Notes
     -----
@@ -169,7 +170,7 @@ def R2zyx(R_AB: Union[list, tuple, ndarray]) -> Tuple[float64, float64, float64]
 
     Returns
     -------
-    tuple[float64, float64, float64]
+    tuple[float64 | ndarray, float64 | ndarray, float64 | ndarray]
         `(z, y, x)` real scalars angles [rad] of rotation about new axes.
 
     Notes
@@ -345,7 +346,7 @@ def zyx2R(
     z: Union[int, float, list, tuple, ndarray],
     y: Union[int, float, list, tuple, ndarray],
     x: Union[int, float, list, tuple, ndarray],
-):
+) -> ndarray:
     """
     Returns rotation matrix from Euler angles in the zyx-order.
 
@@ -437,12 +438,13 @@ def n_E2lat_lon(
     ----------
     n_E : ndarray
         3 x n array n-vector [no unit] decomposed in E.
-    R_Ee : 3 x 3 array
-        rotation matrix defining the axes of the coordinate frame E.
+    R_Ee : list | tuple | ndarray | None
+        Optional 3 x 3 rotation matrix defining the axes of the coordinate frame E.
 
     Returns
     -------
-    latitude, longitude: real scalars or vectors of length n.
+    tuple[ndarray, ndarray]
+        `(latitude, longitude)`: real scalars or vectors of length n.
         Geodetic latitude and longitude given in [rad]
 
     See also
@@ -478,14 +480,16 @@ def change_axes_to_E(
 
     Parameters
     ----------
-    n_E: 3 x n array
-        n-vector [no unit] decomposed in E.
-    R_Ee : 3 x 3 array
-        rotation matrix defining the axes of the coordinate frame E.
+    n_E : ndarray
+        3 x n array n-vector [no unit] decomposed in E.
+    R_Ee : list | tuple | ndarray | None
+        Optional 3 x 3 rotation matrix defining the axes of the coordinate frame E.
+
     Returns
     -------
-    n_e: 3 x n array
-        n-vector [no unit] decomposed in e.
+    ndarray
+        n_e: 3 x n array
+            n-vector [no unit] decomposed in e.
 
     Notes
     -----
@@ -513,7 +517,7 @@ def n_E2R_EN(
 
     Parameters
     ----------
-    n_E: ndarray
+    n_E : ndarray
         3 x n array n-vector [no unit] decomposed in E
     R_Ee : list | tuple | ndarray | None
         Optional 3 x 3 rotation matrix defining the axes of the coordinate frame E.
@@ -563,8 +567,8 @@ def n_E2R_EN(
 def n_E_and_wa2R_EL(
     n_E: ndarray,
     wander_azimuth: Union[int, float, list, tuple, ndarray],
-    R_Ee=None
-):
+    R_Ee: Union[list, tuple, ndarray, None]=None
+) -> ndarray:
     """
     Returns rotation matrix R_EL from n-vector and wander azimuth angle.
 
