@@ -3,6 +3,7 @@ Created on 18. des. 2015
 
 @author: pab
 """
+import warnings
 from functools import partial
 import pytest
 import numpy as np
@@ -573,7 +574,8 @@ class TestExamples:
         pathA = GeoPath(pointA1, pointA2)
         pathB = GeoPath(pointB1, pointB2)
 
-        pointC = pathA.intersect(pathB).to_geo_point()
+        with pytest.warns(UserWarning):
+            pointC = pathA.intersect(pathB).to_geo_point()
 
         lat, lon = pointC.latitude_deg, pointC.longitude_deg
 
