@@ -740,31 +740,41 @@ class Nvector(_Common):
         self.z = z
         self.frame = _default_frame(frame)
 
-    def interpolate(self, t_i, t, kind='linear', window_length=0, polyorder=2,
-                    mode='interp', cval=0.0):
+    def interpolate(
+        self,
+        t_i: ndarray,
+        t: ndarray,
+        kind: Union[int, str]='linear',
+        window_length: int=0,
+        polyorder: int=2,
+        mode: str='interp',
+        cval: Union[int, float]=0.0
+    ):
         """
         Returns interpolated values from nvector data.
 
         Parameters
         ----------
-        t_i: real vector length m
-            Vector of interpolation times.
-        t: real vector length n
-            Vector of times.
-        kind: str or int, optional
+        t_i : ndarray
+            Real vector of length m. Vector of interpolation times.
+        t : ndarray
+            Real vector of length n. Vector of times.
+        nvectors : ndarray
+            3 x n array n-vectors [no unit] decomposed in E.
+        kind: str | int
             Specifies the kind of interpolation as a string
             ('linear', 'nearest', 'zero', 'slinear', 'quadratic', 'cubic'
             where 'zero', 'slinear', 'quadratic' and 'cubic' refer to a spline
             interpolation of zeroth, first, second or third order) or as an
             integer specifying the order of the spline interpolator to use.
-            Default is 'linear'.
-        window_length: positive odd integer
+        window_length : int
             The length of the Savitzky-Golay filter window (i.e., the number of coefficients).
-            Default window_length=0, i.e. no smoothing.
-        polyorder: int
+            Must be positive odd integer or zero. Default window_length=0, i.e. no smoothing.
+        polyorder : int
             The order of the polynomial used to fit the samples.
             polyorder must be less than window_length.
-        mode: 'mirror', 'constant', 'nearest', 'wrap' or 'interp'.
+        mode: str
+            Accepted values are 'mirror', 'constant', 'nearest', 'wrap' or 'interp'.
             Determines the type of extension to use for the padded signal to
             which the filter is applied.  When mode is 'constant', the padding
             value is given by cval.
@@ -772,14 +782,13 @@ class Nvector(_Common):
             is used.  Instead, a degree polyorder polynomial is fit to the
             last window_length values of the edges, and this polynomial is
             used to evaluate the last window_length // 2 output values.
-        cval: scalar, optional
+        cval: int | float
             Value to fill past the edges of the input if mode is 'constant'.
-            Default is 0.0.
 
         Returns
         -------
-        result: Nvector objest
-            Interpolated n-vector(s) [no unit] decomposed in E.
+        Nvector
+            Interpolated Nvector decomposed in E.
 
         Notes
         -----
@@ -828,7 +837,7 @@ class Nvector(_Common):
         """True if the position is a scalar point"""
         return np.ndim(self.z) == 0 and self.normal.shape[1] == 1
 
-    def to_geo_point(self):
+    def to_geo_point(self) -> GeoPoint:
         """
         Returns position as GeoPoint object.
 
@@ -843,22 +852,22 @@ class Nvector(_Common):
         return GeoPoint(latitude, longitude, self.z, self.frame)
 
     def to_nvector(self):
-        """
-        Returns position as Nvector object.
+        """Position as Nvector object, in this case, self.
 
         See also
         --------
         Nvector
+            Self
         """
         return self
 
     delta_to = _delta
 
-    def unit(self):
+    def unit(self) -> None:
         """Normalizes self to unit vector(s)"""
         self.normal = unit(self.normal)
 
-    def course_over_ground(self, **options):
+    def course_over_ground(self, **options) -> Union[float64, ndarray]:
         """Returns course over ground in radians from nvector positions
 
         Parameters
@@ -888,7 +897,7 @@ class Nvector(_Common):
 
         Returns
         -------
-        ndarray
+        float64 | ndarray
             Angle in radians clockwise from True North to the direction towards
             which the vehicle travels.
 
@@ -928,8 +937,12 @@ class Nvector(_Common):
         return course_over_ground(self.normal, a=frame.a, f=frame.f, R_Ee=frame.R_Ee, **options)
 
     def mean(self):
-        """
-        Returns mean position of the n-vectors.
+        """Mean position of the n-vectors
+
+        Returns
+        -------
+        Nvector
+            Mean n-vector
         """
         average_nvector = unit(np.sum(self.normal, axis=1).reshape((3, 1)))
         return self.frame.Nvector(average_nvector, z=np.mean(self.z))
@@ -1032,20 +1045,25 @@ class Pvector(_Common):
         p_AB_E = mdot(n_frame.R_EN, p_AB_N[:, None, ...]).reshape(3, -1)
         return ECEFvector(p_AB_E, frame=n_frame.nvector.frame, scalar=self.scalar)
 
-    def to_nvector(self):
-        """
-        Returns position as Nvector object.
+    def to_nvector(self) -> Nvector:
+        """Returns position as Nvector object.
 
         See also
         --------
         Nvector
+            Position as Nvector
         """
 
         return self.to_ecef_vector().to_nvector()
 
-    def to_geo_point(self):
+    def to_geo_point(self) -> GeoPoint:
         """
         Returns position as GeoPoint object.
+
+        Returns
+        -------
+        GeoPoint
+            Position as GeoPoint.
 
         See also
         --------
@@ -1056,7 +1074,7 @@ class Pvector(_Common):
     delta_to = _delta
 
     @property
-    def length(self):
+    def length(self) -> Union[float64, ndarray]:
         """Length of the pvector."""
         lengths = norm(self.pvector, axis=0)
         if self.scalar:
@@ -1064,12 +1082,12 @@ class Pvector(_Common):
         return lengths
 
     @property
-    def azimuth_deg(self):
+    def azimuth_deg(self) -> Union[float64, ndarray]:
         """Azimuth in degree clockwise relative to the x-axis."""
         return deg(self.azimuth)
 
     @property
-    def azimuth(self):
+    def azimuth(self) -> Union[float64, ndarray]:
         """Azimuth in radian clockwise relative to the x-axis."""
         p_AB_N = self.pvector
         if self.scalar:
@@ -1077,12 +1095,12 @@ class Pvector(_Common):
         return np.arctan2(p_AB_N[1], p_AB_N[0])
 
     @property
-    def elevation_deg(self):
+    def elevation_deg(self) -> Union[float64, ndarray]:
         """Elevation in degree relative to the xy-plane. (Positive downwards in a NED frame)"""
         return deg(self.elevation)
 
     @property
-    def elevation(self):
+    def elevation(self) -> Union[float64, ndarray]:
         """Elevation in radian relative to the xy-plane. (Positive downwards in a NED frame)"""
         z = self.pvector[2]
         if self.scalar:
@@ -1151,11 +1169,24 @@ class ECEFvector(Pvector):
         return Pvector(p_AB_N.reshape(3, -1), frame=frame, scalar=self.scalar)
 
     def to_ecef_vector(self):
+        """Returns position as ECEFvector object, in this case, itself.
+
+        Returns
+        -------
+        ECEFvector
+            Self
+
+        """
         return self
 
-    def to_geo_point(self):
+    def to_geo_point(self) -> GeoPoint:
         """
         Returns position as GeoPoint object.
+
+        Returns
+        -------
+        GeoPoint
+            Position as GeoPoint
 
         See also
         --------
@@ -1163,9 +1194,13 @@ class ECEFvector(Pvector):
         """
         return self.to_nvector().to_geo_point()
 
-    def to_nvector(self):
-        """
-        Returns position as Nvector object.
+    def to_nvector(self) -> Nvector:
+        """Returns position as Nvector object.
+
+        Returns
+        -------
+        Nvector
+            Position as Nvector
 
         See also
         --------
@@ -1240,24 +1275,24 @@ class GeoPath:
                       category=DeprecationWarning, stacklevel=2)
         return self.point_b
 
-    def nvectors(self):
+    def nvectors(self) -> Tuple[Nvector, Nvector]:
         """Returns point_a and point_b as n-vectors"""
         return self.point_a.to_nvector(), self.point_b.to_nvector()
 
-    def geo_points(self):
+    def geo_points(self) -> Tuple[GeoPoint, GeoPoint]:
         """Returns point_a and point_b as geo-points"""
         return self.point_a.to_geo_point(), self.point_b.to_geo_point()
 
-    def ecef_vectors(self):
+    def ecef_vectors(self) -> Tuple[ECEFvector, ECEFvector]:
         """Returns point_a and point_b as  ECEF-vectors"""
         return self.point_a.to_ecef_vector(), self.point_b.to_ecef_vector()
 
-    def nvector_normals(self):
+    def nvector_normals(self) -> Tuple[ndarray, ndarray]:
         """Returns nvector normals for position a and b"""
         nvector_a, nvector_b = self.nvectors()
         return nvector_a.normal, nvector_b.normal
 
-    def _get_average_radius(self):
+    def _get_average_radius(self) -> Union[float, float64, ndarray]:
         p_E1_E, p_E2_E = self.ecef_vectors()
         radius = (p_E1_E.length + p_E2_E.length) / 2
         return radius
@@ -1340,8 +1375,8 @@ class GeoPath:
 
         Parameters
         ----------
-        path: GeoPath object
-            path to intersect
+        path : GeoPath
+            Path to intersect
 
         Returns
         -------
@@ -1634,26 +1669,30 @@ class FrameE(_FrameEBase):
 
     def inverse(
         self,
-        lat_a,
-        lon_a,
-        lat_b,
-        lon_b,
-        z=0,
-        degrees=False
+        lat_a: Union[int, float, list, tuple, ndarray],
+        lon_a: Union[int, float, list, tuple, ndarray],
+        lat_b: Union[int, float, list, tuple, ndarray],
+        lon_b: Union[int, float, list, tuple, ndarray],
+        z: Union[int, float, list, tuple, ndarray]=0,
+        degrees: bool=False
     ) -> Tuple[Union[float64, ndarray], Union[float64, ndarray], Union[float64, ndarray]]:
         """
         Returns ellipsoidal distance between positions as well as the direction.
 
         Parameters
         ----------
-        lat_a, lon_a:  real scalars or vectors.
-            Latitude and longitude of position a.
-        lat_b, lon_b:  real scalars or vectors.
-            Latitude and longitude of position b.
-        z : real scalar or vector
-            depth relative to Earth ellipsoid.
-        degrees: bool
-            angles are given in degrees if True otherwise in radians.
+        lat_a : int | float | list | tuple | ndarray
+            Scalar or vectors of latitude of position A.
+        lon_a : int | float | list | tuple | ndarray
+            Scalar or vectors of longitude of position A.
+        lat_b : int | float | list | tuple | ndarray
+            Scalar or vectors of latitude of position B.
+        lon_b : int | float | list | tuple | ndarray
+            Scalar or vectors of longitude of position B.
+        z : int | float | list | tuple | ndarray
+            Scalar or vectors of depth relative to Earth ellipsoid (default = 0)
+        degrees : bool
+            Angles are given in degrees if True otherwise in radians.
 
         Returns
         -------
@@ -1847,7 +1886,6 @@ class _LocalFrame(_LocalFrameBase):
         return Pvector(pvector, frame=self)
 
 
-
 @use_docstring(_examples.get_examples_no_header([1]))
 class FrameN(_LocalFrame):
     """
@@ -1892,7 +1930,7 @@ class FrameN(_LocalFrame):
         self.nvector = Nvector(nvector.normal, z=0, frame=nvector.frame)
 
     @property
-    def R_EN(self):
+    def R_EN(self) -> ndarray:
         """Rotation matrix to go between E and N frame"""
         nvector = self.nvector
         return n_E2R_EN(nvector.normal, nvector.frame.R_Ee)
@@ -1903,19 +1941,16 @@ class FrameN(_LocalFrame):
 
 
 class FrameL(FrameN):
-
-    """
-    Local level, Wander azimuth frame
+    """Local level, Wander azimuth frame
 
     Parameters
     ----------
-    point: ECEFvector, GeoPoint or Nvector object
-        position of the vehicle (B) which also defines the origin of the local
+    point : ECEFvector | GeoPoint | Nvector
+        Position of the vehicle (B) which also defines the origin of the local
         frame L. The origin is directly beneath or above the vehicle (B), at
         Earth's surface (surface of ellipsoid model).
-    wander_azimuth: int | float | list | tuple | ndarray
-        real scalar
-        Angle [rad] between the x-axis of L and the north direction.
+    wander_azimuth : int | float | list | tuple | ndarray
+        Real scalar or vector angle [rad] between the x-axis of L and the north direction.
 
     Notes
     -----
@@ -1950,7 +1985,7 @@ class FrameL(FrameN):
         self.wander_azimuth = wander_azimuth
 
     @property
-    def R_EN(self):
+    def R_EN(self) -> ndarray:
         """Rotation matrix to go between E and L frame"""
         n_EA_E = self.nvector.normal
         R_Ee = self.nvector.frame.R_Ee
@@ -1959,16 +1994,19 @@ class FrameL(FrameN):
 
 @use_docstring(_examples.get_examples_no_header([2]))
 class FrameB(_LocalFrame):
-    """
-    Body frame
+    """Body frame
 
     Parameters
     ----------
-    point: ECEFvector, GeoPoint or Nvector object
-        position of the vehicle's reference point which also coincides with
+    point : ECEFvector | GeoPoint | Nvector
+        Position of the vehicle's reference point which also coincides with
         the origin of the frame B.
-    yaw, pitch, roll: real scalars
-        defining the orientation of frame B in [deg] or [rad].
+    yaw : int | float | float64 | ndarray
+        Yaw defining the orientation of frame B in [deg] or [rad].
+    pitch : int | float | float64 | ndarray
+        Pitch defining the orientation of frame B in [deg] or [rad].
+    roll : int | float | float64 | ndarray
+        Roll defining the orientation of frame B in [deg] or [rad].
     degrees : bool
         if True yaw, pitch, roll are given in degrees otherwise in radians
 
@@ -2001,7 +2039,7 @@ class FrameB(_LocalFrame):
         self.roll = roll
 
     @property
-    def R_EN(self):
+    def R_EN(self) -> ndarray:
         """Rotation matrix to go between E and B frame"""
         R_NB = zyx2R(self.yaw, self.pitch, self.roll)
         n_EB_E = self.nvector.normal
