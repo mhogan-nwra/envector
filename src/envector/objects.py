@@ -304,12 +304,15 @@ class GeoPoint(_Common):
 
     """
     _NAMES = ('latitude', 'longitude', 'z', 'frame')
+    """Sequence of attribute names for the repr"""
     latitude: ndarray
     """Geodetic latitude [rad]"""
     longitude: ndarray
     """Geodetic longitude [rad]"""
     z: ndarray
     """Depth(s) [m] relative to the ellipsoid (depth = -height)"""
+    frame: _FrameEBase
+    """Frame ellipsoid"""
 
     def __init__(
         self,
@@ -719,12 +722,13 @@ class Nvector(_Common):
     """
 
     _NAMES = ('normal', 'z', 'frame')
-
-    def __init__(self, normal, z=0, frame=None):
+    """Sequence of attribute names for the repr"""
     normal: ndarray
     """Normal vector(s)"""
     z: Union[int, float, list, tuple, ndarray]
     """Depth(s) [m]"""
+    frame: _FrameEBase
+    """Reference ellipsoid"""
 
     def __init__(
         self,
@@ -984,10 +988,11 @@ class Pvector(_Common):
     """
 
     _NAMES = ('pvector', 'frame', 'scalar')
-
-    def __init__(self, pvector, frame, scalar=None):
+    """Sequence of attribute names for the repr"""
     pvector: Union[list, tuple, ndarray]
     """Position array-like, must be shape (3, n, m, ...) with n>0"""
+    frame: Union[_LocalFrameBase, _FrameEBase]
+    """Reference ellipsoid"""
     scalar: bool
     """True if input `pvector` has shape (3, 1, m, ...)"""
 
@@ -1877,8 +1882,9 @@ class FrameN(_LocalFrame):
     """
 
     _NAMES = ('point',)
-
+    """Sequence of attribute names for the repr"""
     nvector: Nvector
+    """n-vector"""
 
     def __init__(self, point):
         nvector = point.to_nvector()
@@ -1934,7 +1940,9 @@ class FrameL(FrameN):
     FrameE, FrameN, FrameB
     """
     _NAMES = ('point', 'wander_azimuth')
-    wander_azimuth: Union[int, float]
+    """Sequence of attribute names for the repr"""
+    wander_azimuth: Union[int, float, list, tuple, ndarray]
+    """Angle [rad] between the x-axis of L and the north direction."""
 
     def __init__(self, point, wander_azimuth: Union[int, float, list, tuple, ndarray]=0) -> None:
         super(FrameL, self).__init__(point)
