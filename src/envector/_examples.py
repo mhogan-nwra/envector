@@ -538,7 +538,7 @@ Exact solution:
     >>> msg.format(lat, lon)
     'Ex8, Destination: lat, lon = 79.9915 deg, -90.0177 deg'
 
-    >>> np.allclose(azimuthb, -160.01742926820506)
+    >>> bool(np.allclose(azimuthb, -160.01742926820506))
     True
 
 Greatcircle solution:
@@ -550,7 +550,7 @@ Greatcircle solution:
     >>> msg.format(lat2, lon2)
     'Ex8, Destination: lat, lon = 79.9915 deg, -90.0177 deg'
 
-    >>> np.allclose(azimuthb, -160.0174292682187)
+    >>> bool(np.allclose(azimuthb, -160.0174292682187))
     True
 
 """
@@ -614,15 +614,15 @@ Solution:
     'Ex9, Intersection: lat, lon = 40.3186, 55.9019 deg'
 
 Check that PointC is not between A1 and A2 or B1 and B2:
-    >>> pathA.on_path(pointC)
+    >>> bool(pathA.on_path(pointC))
     False
-    >>> pathB.on_path(pointC)
+    >>> bool(pathB.on_path(pointC))
     False
 
 Check that PointC is on the great circle going through path A and path B:
-    >>> pathA.on_great_circle(pointC)
+    >>> bool(pathA.on_great_circle(pointC))
     True
-    >>> pathB.on_great_circle(pointC)
+    >>> bool(pathB.on_great_circle(pointC))
     True
 
 """
@@ -656,14 +656,14 @@ or alternatively
     'Ex9, Intersection: lat, lon = 40.3186, 55.9019 deg'
 
 Check that PointC is not between A1 and A2 or B1 and B2:
-    >>> np.allclose([nv.on_great_circle_path(path_a, n_EC_E),
-    ...              nv.on_great_circle_path(path_b, n_EC_E)], False)
+    >>> bool(np.allclose([nv.on_great_circle_path(path_a, n_EC_E),
+    ...                   nv.on_great_circle_path(path_b, n_EC_E)], False))
     True
 
 
 Check that PointC is on the great circle going through path A and path B:
-    >>> np.allclose([nv.on_great_circle(path_a, n_EC_E),
-    ...              nv.on_great_circle(path_b, n_EC_E)], True)
+    >>> bool(np.allclose([nv.on_great_circle(path_a, n_EC_E),
+    ...                   nv.on_great_circle(path_b, n_EC_E)], True))
     True
 
 """
@@ -711,7 +711,7 @@ Solution:
     'Ex10: Cross track distance: s_xt, d_xt = 11.12 km, 11.12 km'
 
     >>> pointC = pathA.closest_point_on_great_circle(pointB)
-    >>> np.allclose(pathA.on_path(pointC), True)
+    >>> bool(np.allclose(pathA.on_path(pointC), True))
     True
 
 """
