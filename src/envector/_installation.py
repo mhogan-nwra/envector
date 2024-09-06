@@ -40,7 +40,7 @@ python session::
 
 or
 
-   $ py.test --pyargs envector --doctest-modules
+   $ pdm run pytest
 
 at the command prompt.
 
