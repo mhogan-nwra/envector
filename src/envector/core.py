@@ -833,7 +833,7 @@ def course_over_ground(
     f: float=1.0 / 298.257223563,
     R_Ee: Union[list, tuple, ndarray, None]=None,
     **options : Dict[str, Any]
-) -> Union[float, ndarray]:
+) -> Union[float64, ndarray]:
     """Returns course over ground in radians from nvector positions.
 
     An optional smoothing filter is applied if the optional keyword `window_length` value is an integer and >0.
