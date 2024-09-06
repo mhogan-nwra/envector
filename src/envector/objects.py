@@ -273,6 +273,17 @@ class GeoPoint(_Common):
     degrees : bool
         True if input are given in degrees otherwise radians are assumed.
 
+    Attributes
+    ----------
+    latitude : ndarray
+        Geodetic latitudes [rad]
+    longitude : ndarray
+        Geodetic longitudes [rad]
+    z : ndarray
+        Depth(s) [m] relative to the ellipsoid (depth = -height)
+    frame : FrameE
+        Reference ellipsoid. The default ellipsoid model used is WGS84
+
     Examples
     --------
     Solve geodesic problems.
@@ -691,13 +702,22 @@ class Nvector(_Common):
 
     Parameters
     ----------
-    normal: 3 x n array
-        n-vector(s) [no unit] decomposed in E.
-    z: real scalar or vector of length n.
-        Depth(s) [m]  relative to the ellipsoid (depth = -height)
-    frame: FrameE object
+    normal : ndarray
+        3 x n array n-vector(s) [no unit] decomposed in E.
+    z : int | float | ndarray
+        Real scalar or vector of length n depth(s) [m] relative to the ellipsoid (depth = -height)
+    frame : FrameE
         Reference ellipsoid. The default ellipsoid model used is WGS84, but
         other ellipsoids/spheres might be specified.
+
+    Attributes
+    ----------
+    normal : ndarray
+        Normal vector(s) [no unit] decomposed in E.
+    z : int | float | ndarray
+        Depth(s) [m] relative to the ellipsoid (depth = -height)
+    frame : FrameE
+        Reference ellipsoid. The default ellipsoid model used is WGS84
 
     Notes
     -----
@@ -725,7 +745,7 @@ class Nvector(_Common):
     """Sequence of attribute names for the repr"""
     normal: ndarray
     """Normal vector(s)"""
-    z: Union[int, float, list, tuple, ndarray]
+    z: Union[int, float, ndarray]
     """Depth(s) [m]"""
     frame: _FrameEBase
     """Reference ellipsoid"""
@@ -997,8 +1017,16 @@ class Pvector(_Common):
     frame : FrameN | FrameB | FrameL
         Local frame
     scalar : bool
-        Input p-vector a scalar?
+        Input p-vector a scalar? If None, then determined by shape of pvector
 
+    Attributes
+    ----------
+    pvector : ndarray
+        3 x n array cartesian position vector(s) [m] from E to B, decomposed in E.
+    frame : FrameN | FrameB | FrameL
+        Reference ellipsoid
+    scalar : bool
+        False if input `pvector` has shape (3, >=2) or forced at init.
     """
 
     _NAMES = ('pvector', 'frame', 'scalar')
@@ -1008,7 +1036,7 @@ class Pvector(_Common):
     frame: Union[_LocalFrameBase, _FrameEBase]
     """Reference ellipsoid"""
     scalar: bool
-    """True if input `pvector` has shape (3, 1, m, ...)"""
+    """False if input `pvector` has shape (3, >=2)"""
 
     def __init__(
         self,
@@ -1122,6 +1150,15 @@ class ECEFvector(Pvector):
         reference ellipsoid. The default ellipsoid model used is WGS84, but
         other ellipsoids/spheres might be specified.
 
+    Attributes
+    ----------
+    pvector : ndarray
+        3 x n array cartesian position vector(s) [m] from E to B, decomposed in E.
+    frame : FrameN | FrameB | FrameL
+        Reference ellipsoid
+    scalar : bool
+        False if input `pvector` has shape (3, >=2) or forced at init.
+
     Notes
     -----
     The position of B (typically body) relative to E (typically Earth) is
@@ -1231,8 +1268,17 @@ class ECEFvector(Pvector):
         return ECEFvector(-self.pvector, self.frame, self.scalar)
 
 
+class _GeoPathBase:
+
+    point_a : Union[Nvector, GeoPoint, ECEFvector]
+    """Starting point of path, position A, decomposed in E."""
+    point_b: Union[Nvector, GeoPoint, ECEFvector]
+    """Ending point of path, position B, decomposed in E."""
+
+
+
 @use_docstring(_examples.get_examples_no_header([5, 6, 9, 10]))
-class GeoPath:
+class GeoPath(_GeoPathBase):
     """
     Geographical path between two positions in Frame E
 
@@ -1242,6 +1288,13 @@ class GeoPath:
         Starting point of path, position A, decomposed in E.
      point_b : Nvector | GeoPoint | ECEFvector
         Ending point of path, position B, decomposed in E.
+
+    Attributes
+    ----------
+    point_a : Nvector | GeoPoint | ECEFvector
+       Starting point of path, position A, decomposed in E.
+    point_b : Nvector | GeoPoint | ECEFvector
+       Ending point of path, position B, decomposed in E.
 
     Notes
     -----
@@ -1259,6 +1312,7 @@ class GeoPath:
         point_a: Union[Nvector, GeoPoint, ECEFvector],
         point_b: Union[Nvector, GeoPoint, ECEFvector],
     ) -> None:
+        super(GeoPath, self).__init__()
         self.point_a = point_a
         self.point_b = point_b
 
@@ -1370,7 +1424,7 @@ class GeoPath:
             return distance[0]  # scalar track distance
         return distance
 
-    def intersect(self, path) -> Nvector:
+    def intersect(self, path: _GeoPathBase) -> Nvector:
         """
         Returns the intersection(s) between the great circles of the two paths
 
@@ -1625,6 +1679,19 @@ class FrameE(_FrameEBase):
     a : float | None
         Semi-major axis of the Earth ellipsoid given in [m]. If None, determined by `name`.
     f : float | None
+        Flattening [no unit] of the Earth ellipsoid. If None, determined by `name`.
+    name : str
+        Defining the default ellipsoid, default is WGS-84 ellipsoid
+    axes : str
+        Either `'E'` or `'e'`. Define axes orientation of E frame. Default is axes='e' which means
+        that the orientation of the axis is such that:
+        z-axis -> North Pole, x-axis -> Latitude=Longitude=0.
+
+    Attributes
+    ----------
+    a : float
+        Semi-major axis of the Earth ellipsoid given in [m]. If None, determined by `name`.
+    f : float
         Flattening [no unit] of the Earth ellipsoid. If None, determined by `name`.
     name : str
         Defining the default ellipsoid, default is WGS-84 ellipsoid
@@ -1899,6 +1966,11 @@ class FrameN(_LocalFrame):
         frame N. The origin is directly beneath or above the vehicle (B), at
         Earth's surface (surface of ellipsoid model).
 
+    Attributes
+    ----------
+    nvector : Nvector
+        Normal vector from input `point.to_nvector()`
+
     Notes
     -----
     The Cartesian frame is local and oriented North-East-Down, i.e.,
@@ -1952,6 +2024,13 @@ class FrameL(FrameN):
         Earth's surface (surface of ellipsoid model).
     wander_azimuth : int | float | list | tuple | ndarray
         Real scalar or vector angle [rad] between the x-axis of L and the north direction.
+
+    Attributes
+    ----------
+    nvector : Nvector
+        Normal vector from input `point.to_nvector()`
+    wander_azimuth : int | float | list | tuple | ndarray
+        Angle [rad] between the x-axis of L and the north direction.
 
     Notes
     -----
@@ -2010,6 +2089,17 @@ class FrameB(_LocalFrame):
         Roll defining the orientation of frame B in [deg] or [rad].
     degrees : bool
         if True yaw, pitch, roll are given in degrees otherwise in radians
+\
+    Attributes
+    ----------
+    nvector : Nvector
+        Normal vector from input `point.to_nvector()`
+    yaw : int | float | float64 | ndarray
+        Yaw defining the orientation of frame B in [rad].
+    pitch : int | float | float64 | ndarray
+        Pitch defining the orientation of frame B in [rad].
+    roll : int | float | float64 | ndarray
+        Roll defining the orientation of frame B in [rad].
 
     Notes
     -----
