@@ -8,7 +8,7 @@ from __future__ import division, print_function
 from typing import Tuple, Union
 
 import numpy as np
-from numpy import arctan2, sin, cos, array, sqrt, ndarray
+from numpy import arctan2, sin, cos, array, sqrt, ndarray, float64
 
 from envector import license as _license
 from envector._common import test_docstrings, _make_summary
@@ -156,21 +156,21 @@ def R2xyz(
     return x, y, z
 
 
-def R2zyx(R_AB):
+def R2zyx(R_AB: Union[list, tuple, ndarray]) -> Tuple[float64, float64, float64]:
     """
     Returns the Euler angles in the zxy-order from a rotation matrix.
 
     Parameters
     ----------
-    R_AB:  3x3 array
-        rotation matrix [no unit] (direction cosine matrix) such that the
+    R_AB : ndarray
+        3 x 3 array rotation matrix [no unit] (direction cosine matrix) such that the
         relation between a vector v decomposed in A and B is given by:
         v_A = mdot(R_AB, v_B)
 
     Returns
     -------
-    z, y, x: real scalars
-        Angles [rad] of rotation about new axes.
+    tuple[float64, float64, float64]
+        `(z, y, x)` real scalars angles [rad] of rotation about new axes.
 
     Notes
     -----
@@ -202,19 +202,19 @@ def R2zyx(R_AB):
     return -z, -y, -x
 
 
-def R_EL2n_E(R_EL):
+def R_EL2n_E(R_EL: ndarray) -> ndarray:
     """
     Returns n-vector from the rotation matrix R_EL.
 
     Parameters
     ----------
-    R_EL: 3 x 3 x n array
-        Rotation matrix (direction cosine matrix) [no unit]
+    R_EL : ndarray
+        3 x 3 x n array rotation matrix (direction cosine matrix) [no unit]
 
     Returns
     -------
-    n_E: 3 x n array
-        n-vector(s) [no unit] decomposed in E.
+    ndarray
+        3 x n array n-vector(s) [no unit] decomposed in E.
 
     Notes
     -----
@@ -230,19 +230,19 @@ def R_EL2n_E(R_EL):
     return n_E.reshape(3, -1)
 
 
-def R_EN2n_E(R_EN):
+def R_EN2n_E(R_EN: ndarray) -> ndarray:
     """
     Returns n-vector from the rotation matrix R_EN.
 
     Parameters
     ----------
-    R_EN: 3 x 3 x n array
-        Rotation matrix (direction cosine matrix) [no unit]
+    R_EN : ndarray
+        3 x 3 x n array rotation matrix (direction cosine matrix) [no unit]
 
     Returns
     -------
-    n_E: 3 x n array
-        n-vector [no unit] decomposed in E.
+    ndarray
+        3 x n array n-vector [no unit] decomposed in E.
 
     Notes
     -----
@@ -281,19 +281,27 @@ def _atleast_3d(x, y, z):
     return x[None, None, :], y[None, None, :], z[None, None, :]
 
 
-def xyz2R(x, y, z):
+def xyz2R(
+    x: Union[int, float, list, tuple, ndarray],
+    y: Union[int, float, list, tuple, ndarray],
+    z: Union[int, float, list, tuple, ndarray],
+) -> ndarray:
     """
     Returns rotation matrix from Euler angles in the xyz-order.
 
     Parameters
     ----------
-    x, y, z: real scalars or array of lengths n
-        Angles [rad] of rotation about new axes.
+    x : int | float | list | tuple | ndarray
+        Real scalars or array of lengths n angles [rad] of rotation about new axes.
+    y : int | float | list | tuple | ndarray
+        Real scalars or array of lengths n angles [rad] of rotation about new axes.
+    z : int | float | list | tuple | ndarray
+        Real scalars or array of lengths n angles [rad] of rotation about new axes.
 
     Returns
     -------
-    R_AB: 3 x 3 x n array
-        rotation matrix [no unit] (direction cosine matrix) such that the
+    ndarray
+        3 x 3 x n array rotation matrix [no unit] (direction cosine matrix) such that the
         relation between a vector v decomposed in A and B is given by:
         v_A = mdot(R_AB, v_B)
 
@@ -333,19 +341,27 @@ def xyz2R(x, y, z):
     return np.squeeze(R_AB)
 
 
-def zyx2R(z, y, x):
+def zyx2R(
+    z: Union[int, float, list, tuple, ndarray],
+    y: Union[int, float, list, tuple, ndarray],
+    x: Union[int, float, list, tuple, ndarray],
+):
     """
     Returns rotation matrix from Euler angles in the zyx-order.
 
     Parameters
     ----------
-    z, y, x: real scalars or arrays of lenths n
-        Angles [rad] of rotation about new axes.
+    z : int | float | list | tuple | ndarray
+        Real scalars or array of lengths n angles [rad] of rotation about new axes.
+    y : int | float | list | tuple | ndarray
+        Real scalars or array of lengths n angles [rad] of rotation about new axes.
+    x : int | float | list | tuple | ndarray
+        Real scalars or array of lengths n angles [rad] of rotation about new axes.
 
     Returns
     -------
-    R_AB: 3 x 3 x n array
-        rotation matrix [no unit] (direction cosine matrix) such that the
+    ndarray
+        3 x 3 x n array rotation matrix [no unit] (direction cosine matrix) such that the
         relation between a vector v decomposed in A and B is given by:
         v_A = mdot(R_AB, v_B)
 
@@ -544,23 +560,27 @@ def n_E2R_EN(
     return np.squeeze(R_EN)
 
 
-def n_E_and_wa2R_EL(n_E, wander_azimuth, R_Ee=None):
+def n_E_and_wa2R_EL(
+    n_E: ndarray,
+    wander_azimuth: Union[int, float, list, tuple, ndarray],
+    R_Ee=None
+):
     """
     Returns rotation matrix R_EL from n-vector and wander azimuth angle.
 
     Parameters
     ----------
-    n_E: 3 x n array
-        n-vector [no unit] decomposed in E
-    wander_azimuth: real scalar or array of length n
-        Angle [rad] between L's x-axis and north, positive about L's z-axis.
-    R_Ee : 3 x 3 array
-        rotation matrix defining the axes of the coordinate frame E.
+    n_E : ndarray
+        3 x n array n-vector [no unit] decomposed in E
+    wander_azimuth : int | float | list | tuple | ndarray
+        Real scalar or array of length n angle [rad] between L's x-axis and north, positive about L's z-axis.
+    R_Ee : list | tuple | ndarray | None
+        Optional 3 x 3 rotation matrix defining the axes of the coordinate frame E.
 
     Returns
     -------
-    R_EL: 3 x 3 x n array
-        The resulting rotation matrix.       [no unit]
+    ndarray
+        3 x 3 x n array resulting rotation matrix [no unit]
 
     Notes
     -----
