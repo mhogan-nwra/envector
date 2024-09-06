@@ -1004,7 +1004,7 @@ class Pvector(_Common):
     ) -> None:
         if scalar is None:
             scalar = np.shape(pvector)[1] == 1
-        self.pvector = pvector
+        self.pvector = np.asarray(pvector)
         self.frame = frame
         self.scalar = scalar
 
