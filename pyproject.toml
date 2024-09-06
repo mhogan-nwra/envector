@@ -69,7 +69,7 @@ test = [
 sphinx = [
     "sphinx>=1.3.1",
     "sphinx_rtd_theme>=0.1.7",
-    "numpydoc>=0.5",
+    "numpydoc>=0.5",  # Remove in next release
     "sphinxcontrib-napoleon",
     "sphinxcontrib-bibtex"
 ]
