@@ -77,5 +77,6 @@ all = ["envector[build,test,sphinx]"]
 [tool.pytest.ini_options]
 addopts = "-rsxXf --doctest-modules"
 testpaths = [
-    "tests"
+    "tests",
+    "src"
 ]
