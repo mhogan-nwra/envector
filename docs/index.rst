@@ -1,5 +1,9 @@
 Welcome to the envector's documentation!
 ========================================
+.. only:: html
+
+    |pkg_img| |docs_img| |versions_img| |downloads_img|
+
 
 This is the documentation of **nvector** version |release| for Python3 only released on |today|.
 
@@ -9,7 +13,7 @@ Official releases are available at: http://pypi.python.org/pypi/envector.
 
 Official homepage are available at: http://www.navlab.net/nvector/
 
-   
+
 .. toctree::
     :maxdepth: 1
     :numbered:
