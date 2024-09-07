@@ -587,21 +587,14 @@ to do the calculations.
 
 
 
-.. |pkg_img| image:: https://badge.fury.io/py/nvector.png
-   :target: https://pypi.python.org/pypi/nvector/
-.. |tests_img| image:: https://app.travis-ci.com/mhogan-nwra/envector.svg?branch=master
-   :target: https://app.travis-ci.com/mhogan-nwra/envector
+.. |pkg_img| image:: https://badge.fury.io/py/envector.png
+   :target: https://pypi.python.org/pypi/envector/
 .. |docs_img| image:: https://readthedocs.org/projects/pip/badge/?version=stable
-   :target: http://Nvector.readthedocs.org/en/stable/
-.. |health_img| image:: https://api.codeclimate.com/v1/badges/c04214bef610b25906fe/maintainability
-   :target: https://codeclimate.com/github/mhogan-nwra/envector/maintainability
-   :alt: Maintainability
-.. |coverage_img| image:: https://codecov.io/gh/pbrod/nvector/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/pbrod/nvector
-.. |versions_img| image:: https://img.shields.io/pypi/pyversions/Nvector.svg
+   :target: http://envector.readthedocs.org/en/stable/
+.. |versions_img| image:: https://img.shields.io/pypi/pyversions/envector.svg
    :target: https://github.com/pbrod/nvector
-.. |downloads_img| image:: https://pepy.tech/badge/nvector/month
-   :target: https://pepy.tech/project/nvector
+.. |downloads_img| image:: https://pepy.tech/badge/envector/month
+   :target: https://pepy.tech/project/envector
    :alt: PyPI - Downloads
 
 
