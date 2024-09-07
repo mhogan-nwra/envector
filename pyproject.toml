@@ -4,6 +4,10 @@ dynamic = ["version"]
 description = "The envector library is a suite of tools written in Python to solve geographical position calculations forked from nvector."
 authors = [
     {name = "Matt Hogan", email = "mhogan@nwra.com"},
+    {name = "Kenneth Gade, FFI"},
+    {name = "Kristian Svartveit, FFI"},
+    {name = "Brita Hafskjold Gade, FFI"},
+    {name = "Per A. Brodtkorb, FFI"},
 ]
 dependencies = [
     "numpy>=1.9",
@@ -12,13 +16,16 @@ dependencies = [
     "matplotlib",
     "cartopy"
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.5"
 readme = "README.md"
 license = {text = "Simplified BSD"}
 license_file = "LICENSE.txt"
-
+url = "https://github.com/mhogan-nwra/envector/"
 classifiers = [
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
