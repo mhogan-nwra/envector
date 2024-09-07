@@ -7,7 +7,7 @@ envector
 
 
 The envector library is a suite of tools written in Python to solve geographical position calculations forked from the
-Test hyperlink: nvector_.
+nvector_ package.
 
 Currently the following operations are implemented:
 
@@ -68,7 +68,7 @@ Bleeding edge: https://github.com/mhogan-nwra/envector.
 
 Official releases available at: http://pypi.python.org/pypi/envector.
 
-Original/precursor package nvector at:  http://pypi.python.org/pypi/nvector.
+Original/precursor package nvector_ at:  http://pypi.python.org/pypi/nvector.
 
 
 Install envector
