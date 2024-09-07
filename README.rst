@@ -6,7 +6,8 @@ envector
     |pkg_img| |docs_img| |versions_img| |downloads_img|
 
 
-The envector library is a suite of tools written in Python to solve geographical position calculations forked from envector.
+The envector library is a suite of tools written in Python to solve geographical position calculations forked from the
+Test hyperlink: nvector_.
 
 Currently the following operations are implemented:
 
@@ -67,7 +68,7 @@ Bleeding edge: https://github.com/mhogan-nwra/envector.
 
 Official releases available at: http://pypi.python.org/pypi/envector.
 
-Precursor package nvector at:  http://pypi.python.org/pypi/nvector.
+Original/precursor package nvector at:  http://pypi.python.org/pypi/nvector.
 
 
 Install envector
@@ -586,13 +587,13 @@ Karney's `geographiclib <https://pypi.python.org/pypi/geographiclib>`_ library
 to do the calculations.
 
 
-
+.. _nvector: https://github.com/pbrod/nvector
 .. |pkg_img| image:: https://badge.fury.io/py/envector.png
    :target: https://pypi.python.org/pypi/envector/
 .. |docs_img| image:: https://readthedocs.org/projects/pip/badge/?version=stable
    :target: http://envector.readthedocs.org/en/stable/
 .. |versions_img| image:: https://img.shields.io/pypi/pyversions/envector.svg
-   :target: https://github.com/pbrod/nvector
+   :target: https://github.com/mhogan-nwra/envector
 .. |downloads_img| image:: https://pepy.tech/badge/envector/month
    :target: https://pepy.tech/project/envector
    :alt: PyPI - Downloads
