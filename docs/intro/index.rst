@@ -5,8 +5,8 @@ Introduction
 ============
 
 
-What is nvector?
-================
+What is envector?
+=================
 
 .. automodule:: envector._intro
    :members: __doc__
@@ -19,11 +19,11 @@ What is nvector?
 How the documentation is organized
 ==================================
 
-Nvector has a lot of documentation. A high-level overview of how it's organized
+ENvector has a lot of documentation. A high-level overview of how it's organized
 will help you know where to look for certain things:
 
 * :doc:`Tutorials </tutorials/index>` take you by the hand through a series of
-  typical usecases on how to use it. Start here if you're new to nvector.
+  typical use cases on how to use it. Start here if you're new to envector.
 
 * :doc:`Topic guides </topics/index>` discuss key topics and concepts at a
   fairly high level and provide useful background information and explanation.
@@ -34,5 +34,5 @@ will help you know where to look for certain things:
 
 * :doc:`How-to guides </how-to/index>` are recipes. They guide you through the
   steps involved in addressing key problems and use-cases. They are more
-  advanced than tutorials and assume some knowledge of how nvector works.
+  advanced than tutorials and assume some knowledge of how envector works.
 

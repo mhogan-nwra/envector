@@ -3,7 +3,7 @@ What to read next
 =================
 
 So you've read all the :doc:`introductory material </tutorials/index>` and have
-decided you'd like to keep using nvector. We've only just scratched the surface
+decided you'd like to keep using envector. We've only just scratched the surface
 with this intro.
 
 So what's next?
@@ -12,7 +12,7 @@ Well, we've always been big fans of learning by doing. At this point you should
 know enough to start a project of your own and start fooling around. As you need
 to learn new tricks, come back to the documentation.
 
-We've put a lot of effort into making nvector's documentation useful, easy to
+We've put a lot of effort into making envector's documentation useful, easy to
 read and as complete as possible. The rest of this document explains more about
 how the documentation works so that you can get the most out of it.
 
@@ -20,7 +20,7 @@ how the documentation works so that you can get the most out of it.
 Finding documentation
 =====================
 
-The nvector library got a *lot* of documentation,
+The envector library got a *lot* of documentation,
 so finding what you need can sometimes be tricky. A few good places to start
 are the :ref:`search` and the :ref:`genindex`.
 
@@ -29,21 +29,21 @@ Or you can just browse around!
 How the documentation is organized
 ==================================
 
-The nvector main documentation is broken up into "chunks" designed to fill
+The envector main documentation is broken up into "chunks" designed to fill
 different needs:
 
 * The :doc:`introductory material </tutorials/index>` is designed for people new
-  to nvector. It doesn't cover anything in depth, but instead gives a hands on
-  overview of how to use nvector.
+  to envector. It doesn't cover anything in depth, but instead gives a hands on
+  overview of how to use envector.
 
 * The :doc:`topic guides </topics/index>`, on the other hand, dive deep into
-  individual parts of nvector from a theoretical perspective.
+  individual parts of envector from a theoretical perspective.
 
 * We've written a set of :doc:`how-to guides </how-to/index>` that answer
   common "How do I ...?" questions.
 
 * The guides and how-to's don't cover every single class, function, and
-  method available in nvector -- that would be overwhelming when you're
+  method available in envector -- that would be overwhelming when you're
   trying to learn. Instead, details about individual classes, functions,
   methods, and modules are kept in the :doc:`reference </reference/index>`. This is
   where you'll turn to find the details of a particular function or
@@ -53,7 +53,7 @@ different needs:
 How documentation is updated
 ============================
 
-Just as the nvector code base is developed and improved on a daily basis, our
+Just as the envector code base is developed and improved on a daily basis, our
 documentation is consistently improving. We improve documentation for several
 reasons:
 
@@ -62,31 +62,31 @@ reasons:
 * To add information and/or examples to existing sections that need to be
   expanded.
 
-* To document nvector features that aren't yet documented. (The list of
+* To document envector features that aren't yet documented. (The list of
   such features is shrinking but exists nonetheless.)
 
 * To add documentation for new features as new features get added, or as
-  nvector APIs or behaviors change.
+  envector APIs or behaviors change.
 
 
 In plain text
 -------------
 
-For offline reading, or just for convenience, you can read the nvector
+For offline reading, or just for convenience, you can read the envector
 documentation in plain text.
 
-If you're using an official release of nvector, the zipped package (tarball) of
+If you're using an official release of envector, the zipped package (tarball) of
 the code includes a ``docs/`` directory, which contains all the documentation
 for that release.
 
-If you're using the development version of nvector (aka the master branch), the
+If you're using the development version of envector (aka the master branch), the
 ``docs/`` directory contains all of the documentation. You can update your
 Git checkout to get the latest changes.
 
 One low-tech way of taking advantage of the text documentation is by using the
 Unix ``grep`` utility to search for a phrase in all of the documentation. For
 example, this will show you each mention of the phrase "max_length" in any
-nvector document:
+envector document:
 
 .. code-block:: console
 
@@ -98,7 +98,7 @@ As HTML, locally
 
 You can get a local copy of the HTML documentation following a few easy steps:
 
-* nvector's documentation uses a system called Sphinx__ to convert from
+* envector's documentation uses a system called Sphinx__ to convert from
   plain text to HTML. You'll need to install Sphinx by either downloading
   and installing the package from the Sphinx website, or with ``pip``:
 
@@ -147,10 +147,10 @@ For example, running
 
 .. code-block:: console
 
-    $ pydoc nvector
+    $ pydoc envector
 
 
-at a shell prompt will display documentation on the nvector module, in a style similar 
+at a shell prompt will display documentation on the envector module, in a style similar
 to the manual pages shown by the Unix man command. The argument to pydoc can be 
 the name of a function, module, or package, or a dotted reference to a class, 
 method, or function within a module or module in a package. If the argument to 
