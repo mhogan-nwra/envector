@@ -14,8 +14,8 @@ http://nvector.readthedocs.io/en/latest/
     <http://www.navlab.net/Publications/A_Nonsingular_Horizontal_Position_Representation.pdf>`_
 
 
-Bleeding edge: https://github.com/pbrod/nvector.
+Bleeding edge: https://github.com/mhogan-nwra/envector.
 
-Official releases available at: http://pypi.python.org/pypi/nvector.
+Official releases available at: http://pypi.python.org/pypi/envector.
 
 """

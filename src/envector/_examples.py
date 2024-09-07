@@ -23,7 +23,7 @@ EXAMPLE_1_HEADER = """
 
 EXAMPLE_1_TXT = """
 
-.. image:: https://raw.githubusercontent.com/pbrod/Nvector/master/docs/tutorials/images/ex1img.png
+.. image:: https://raw.githubusercontent.com/mhogan-nwra/envector/master/docs/tutorials/images/ex1img.png
 
 
 Given two positions, A and B as latitudes, longitudes and depths relative to
@@ -104,7 +104,7 @@ EXAMPLE_2_HEADER = """
 
 EXAMPLE_2_TXT = """
 
-.. image:: https://raw.githubusercontent.com/pbrod/Nvector/master/docs/tutorials/images/ex2img.png
+.. image:: https://raw.githubusercontent.com/mhogan-nwra/envector/master/docs/tutorials/images/ex2img.png
 
 A radar or sonar attached to a vehicle B (Body coordinate frame) measures the
 distance and direction to an object C. We assume that the distance and two
@@ -194,7 +194,7 @@ EXAMPLE_3_HEADER = """
 
 EXAMPLE_3_TXT = """
 
-.. image:: https://raw.githubusercontent.com/pbrod/Nvector/master/docs/tutorials/images/ex3img.png
+.. image:: https://raw.githubusercontent.com/mhogan-nwra/envector/master/docs/tutorials/images/ex3img.png
 
 
 Position B is given as an "ECEF-vector" p_EB_E (i.e. a vector from E, the
@@ -249,7 +249,7 @@ EXAMPLE_4_HEADER = """
 
 EXAMPLE_4_TXT = """
 
-.. image:: https://raw.githubusercontent.com/pbrod/Nvector/master/docs/tutorials/images/ex4img.png
+.. image:: https://raw.githubusercontent.com/mhogan-nwra/envector/master/docs/tutorials/images/ex4img.png
 
 
 Geodetic latitude, longitude and height are given for position B as latEB,
@@ -291,7 +291,7 @@ EXAMPLE_5_HEADER = """
 
 EXAMPLE_5_TXT = """
 
-.. image:: https://raw.githubusercontent.com/pbrod/Nvector/master/docs/tutorials/images/ex5img.png
+.. image:: https://raw.githubusercontent.com/mhogan-nwra/envector/master/docs/tutorials/images/ex5img.png
 
 
 Find the surface distance sAB (i.e. great circle distance) between two
@@ -376,7 +376,7 @@ EXAMPLE_6_HEADER = """
 
 EXAMPLE_6_TXT = """
 
-.. image:: https://raw.githubusercontent.com/pbrod/Nvector/master/docs/tutorials/images/ex6img.png
+.. image:: https://raw.githubusercontent.com/mhogan-nwra/envector/master/docs/tutorials/images/ex6img.png
 
 
 Given the position of B at time t0 and t1, n_EB_E(t0) and n_EB_E(t1).
@@ -453,7 +453,7 @@ EXAMPLE_7_HEADER = """
 
 EXAMPLE_7_TXT = """
 
-.. image:: https://raw.githubusercontent.com/pbrod/Nvector/master/docs/tutorials/images/ex7img.png
+.. image:: https://raw.githubusercontent.com/mhogan-nwra/envector/master/docs/tutorials/images/ex7img.png
 
 
 Three positions A, B, and C are given as n-vectors n_EA_E, n_EB_E, and n_EC_E.
@@ -507,7 +507,7 @@ EXAMPLE_8_HEADER = """
 
 EXAMPLE_8_TXT = """
 
-.. image:: https://raw.githubusercontent.com/pbrod/Nvector/master/docs/tutorials/images/ex8img.png
+.. image:: https://raw.githubusercontent.com/mhogan-nwra/envector/master/docs/tutorials/images/ex8img.png
 
 
 We have an initial position A, direction of travel given as an azimuth
@@ -583,7 +583,7 @@ EXAMPLE_9_HEADER = """
 
 EXAMPLE_9_TXT = """
 
-.. image:: https://raw.githubusercontent.com/pbrod/Nvector/master/docs/tutorials/images/ex9img.png
+.. image:: https://raw.githubusercontent.com/mhogan-nwra/envector/master/docs/tutorials/images/ex9img.png
 
 
 Define a path from two given positions (at the surface of a spherical Earth),
@@ -675,7 +675,7 @@ EXAMPLE_10_HEADER = """
 
 EXAMPLE_10_TXT = """
 
-.. image:: https://raw.githubusercontent.com/pbrod/Nvector/master/docs/tutorials/images/ex10img.png
+.. image:: https://raw.githubusercontent.com/mhogan-nwra/envector/master/docs/tutorials/images/ex10img.png
 
 
 Path A is given by the two positions A1 and A2 (similar to the previous
