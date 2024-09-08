@@ -6,8 +6,8 @@ envector
     |pkg_img| |docs_img| |versions_img| |downloads_img|
 
 
-The envector library is a suite of tools written in Python to solve geographical position calculations forked from the
-nvector_ package.
+The envector library is a suite of tools written in Python to solve geographical position calculations. This is
+an open-source fork of the original nvector_ Python package based on the MATLAB nvector toolbox_.
 
 Currently the following operations are implemented:
 
@@ -24,8 +24,29 @@ Currently the following operations are implemented:
 * Find the cross track distance between a path and a position.
 
 
-Using n-vector, the calculations become simple and non-singular. 
+Using envector, the calculations become simple and non-singular.
 Full accuracy is achieved for any global position (and for any distance).
+
+Questions and Answers
+=====================
+
+If you are coming from the nvector_ package, these Q-and-A can quickly explain this package.
+
+1. *What is the difference between this package and nvector_*?
+
+    * Virtually none! The envector_ package is a fork of nvector_ with mostly aesthetic changes.
+    * Existing documentation is preserved and expanded in some cases.
+    * No methods and functions have been removed, but documented deprecated methods in nvector_ will be removed.
+
+2. *Why did you fork nvector_*?
+
+    * Primarily because the nvector_ Python package is broken with NumPy version 2.
+    * There is no indication that the situation will change.
+
+3. *What changes are there with from nvector_*?
+
+    * The envector_ package is a Python3-only package as it embraces type-hints in most cases.
+    * The docstrings have refactored to utilize the Napoleon docstring style.
 
 
 
@@ -588,6 +609,7 @@ to do the calculations.
 
 
 .. _nvector: https://github.com/pbrod/nvector
+.. _toolbox: http://www.navlab.net/nvector/#download>
 .. |pkg_img| image:: https://badge.fury.io/py/envector.png
    :target: https://pypi.python.org/pypi/envector/
 .. |docs_img| image:: https://readthedocs.org/projects/pip/badge/?version=stable
