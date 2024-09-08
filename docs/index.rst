@@ -14,6 +14,30 @@ Official releases are available at: http://pypi.python.org/pypi/envector.
 Official homepage are available at: http://www.navlab.net/nvector/
 
 
+Questions and Answers
+---------------------
+
+If you are coming from the nvector_ package, these Q-and-A can quickly explain this package.
+
+1. *What is the difference between this package and nvector*?
+
+    * Virtually none! The envector_ package is a fork of nvector_ with mostly aesthetic changes.
+    * Existing documentation is preserved and expanded in some cases.
+    * No methods and functions have been removed, but documented deprecated methods in nvector_ will be removed.
+
+2. *Why did you fork nvector*?
+
+    * Primarily because the nvector_ Python package is broken with NumPy version 2.
+    * There is no indication that the situation will change.
+
+3. *What changes are there with from nvector*?
+
+    * The envector_ package is a Python3-only package as it embraces type-hints in most cases.
+    * The docstrings have been refactored to utilize the Napoleon docstring style.
+
+
+
+
 .. toctree::
     :maxdepth: 1
     :numbered:
@@ -42,6 +66,10 @@ Official homepage are available at: http://www.navlab.net/nvector/
         appendix/zreferences.rst
 
 
-    .. automodule:: nvector._images
+    .. automodule:: envector._images
        :members: __doc__
 
+
+.. _envector: https://github.com/mhogan-nwra/envector
+.. _nvector: https://github.com/pbrod/nvector
+.. _toolbox: http://www.navlab.net/nvector/#download>
