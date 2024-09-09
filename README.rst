@@ -620,7 +620,7 @@ to do the calculations.
 .. _nvector: https://github.com/pbrod/nvector
 .. _envector: https://github.com/mhogan-nwra/envector
 .. _toolbox: http://www.navlab.net/nvector/#download>
-.. |pkg_img| image:: https://badge.fury.io/py/envector.png
+.. |pkg_img| image:: https://badge.fury.io/py/envector.svg
    :target: https://pypi.python.org/pypi/envector/
 .. |docs_img| image:: https://readthedocs.org/projects/pip/badge/?version=stable
    :target: http://envector.readthedocs.org/en/stable/

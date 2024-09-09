@@ -1,7 +1,7 @@
 r"""
 .. only:: html
 
-    .. |pkg_img| image:: https://badge.fury.io/py/envector.png
+    .. |pkg_img| image:: https://badge.fury.io/py/envector.svg
        :target: https://pypi.python.org/pypi/envector/
 
     .. |docs_img| image:: https://readthedocs.org/projects/pip/badge/?version=stable
