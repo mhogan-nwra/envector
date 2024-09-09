@@ -3,7 +3,7 @@ envector
 ========
 
 
-    |pkg_img| |docs_img| |versions_img| |downloads_img|
+    |pkg_img| |docs_img| |versions_img| |test_img| |downloads_img|
 
 
 The envector library is a suite of tools written in Python to solve geographical position calculations. This is
@@ -626,6 +626,8 @@ to do the calculations.
    :target: http://envector.readthedocs.org/en/stable/
 .. |versions_img| image:: https://img.shields.io/pypi/pyversions/envector.svg
    :target: https://github.com/mhogan-nwra/envector
+.. |test_img| image:: https://github.com/mhogan-nwra/envector/actions/workflows/python-package.yml/badge.svg
+   :target: https://github.com/mhogan-nwra/envector/actions/workflows/python-package.yml
 .. |downloads_img| image:: https://pepy.tech/badge/envector/month
    :target: https://pepy.tech/project/envector
    :alt: PyPI - Downloads

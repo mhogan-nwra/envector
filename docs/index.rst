@@ -2,7 +2,7 @@ Welcome to the envector's documentation!
 ========================================
 .. only:: html
 
-    |pkg_img| |docs_img| |versions_img| |downloads_img|
+    |pkg_img| |docs_img| |versions_img| |test_img| |downloads_img|
 
 
 This is the documentation of **nvector** version |release| for Python3 only released on |today|.

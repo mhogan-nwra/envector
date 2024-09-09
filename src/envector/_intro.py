@@ -2,7 +2,7 @@ r"""
 
 .. only:: html
 
-    |pkg_img| |docs_img| |versions_img| |downloads_img|
+    |pkg_img| |docs_img| |versions_img| |test_img| |downloads_img|
 
 
 The envector library is a suite of tools written in Python to solve geographical position
