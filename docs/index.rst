@@ -22,8 +22,9 @@ If you are coming from the nvector_ package, these Q-and-A can quickly explain t
 1. *What is the difference between this package and nvector*?
 
     * Virtually none! The envector_ package is a fork of nvector_ with mostly aesthetic changes.
-    * Existing documentation is preserved and expanded in some cases.
     * No methods and functions have been removed, but documented deprecated methods in nvector_ will be removed.
+    * If your Python software worked with nvector_, then there is a good chance envector_ will also work. The caveats
+      are that this package abandons Python2 and extends to Python3.9+ support.
 
 2. *Why did you fork nvector*?
 
@@ -32,9 +33,16 @@ If you are coming from the nvector_ package, these Q-and-A can quickly explain t
 
 3. *What changes are there with from nvector*?
 
+    * Any place there is a `import nvector` or `from nvector` statement, replace it with `import envector` or
+      `from envector`, respectively.
     * The envector_ package is a Python3-only package as it embraces type-hints in most cases.
+    * Documentation is expanded in some cases.
     * The docstrings have been refactored to utilize the Napoleon docstring style.
 
+4. *When is the appropriate to switch to envector*?
+
+    * If your Python software must support NumPy version 2,
+    * If your Python software also stops supporting Python versions after its end-of-life cycle.
 
 
 
