@@ -30,4 +30,4 @@ jobs:
         pdm install -dG test
     - name: Run Tests
       run: |
-        pytest -rsxXf --doctest-modules src tests
+        pdm run pytest
