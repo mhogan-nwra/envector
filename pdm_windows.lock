@@ -5,7 +5,7 @@
 groups = ["default", "all", "build", "sphinx", "test"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:a8205f7de64c9d8f398f705ae1daa21148eb2b3a7511808c9f2da3a937567961"
+content_hash = "sha256:f4a7e111ec21191aa3129fc23cc5387e22e0657183cf1d7c05111faa516240ec"
 
 [[metadata.targets]]
 requires_python = ">=3.12"
