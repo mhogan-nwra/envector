@@ -25,9 +25,9 @@ DEV_YEARS = '{}'.format(START_YEAR) if START_YEAR == CURRENT_YEAR else '{}-{}'.f
 
 project = u'ENvector'
 PACKAGE_NAME = project.lower()
-author = 'Kenneth Gade and Per A. Brodtkorb, with contributions from Matt Hogan'
-organizations = 'Norwegian Defence Research Establishment (FFI), and NorthWest Research Associates (NWRA)'
-copyright = ', '.join((DEV_YEARS, organizations))
+author = 'Kenneth Gade and Per A. Brodtkorb'
+organizations = 'Norwegian Defence Research Establishment (FFI)'
+copyright = ', '.join((DEV_YEARS, organizations)) + ". With contributions from Matt Hogan, NWRA"
 
 __location__ = os.path.abspath(os.path.dirname(__file__))
 SOURCE_PATH = os.path.join(os.path.dirname(__location__), 'src')
