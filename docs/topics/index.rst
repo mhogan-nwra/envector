@@ -4,7 +4,7 @@
 Topics guides
 #############
 
-This section explains and analyses some key concepts in nvector. It's less
+This section explains and analyses some key concepts in ENvector. It's less
 concerned with explaining *how to do things* than with helping you understand
 *how it works*.
 

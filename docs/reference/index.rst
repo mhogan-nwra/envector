@@ -1,8 +1,8 @@
 .. _reference:
 
-#########################
-Reference nvector package
-#########################
+##########################
+Reference ENvector package
+##########################
 
 
 Technical reference material that details functions,
