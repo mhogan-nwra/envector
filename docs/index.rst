@@ -5,7 +5,7 @@ Welcome to the envector's documentation!
     |pkg_img| |docs_img| |versions_img| |test_img| |downloads_img|
 
 
-This is the documentation of **nvector** version |release| for Python3 only released on |today|.
+This is the documentation of the **envector** Python package version |release| for Python3-only released on |today|.
 
 Bleeding edge available at: https://github.com/mhogan-nwra/envector.
 
