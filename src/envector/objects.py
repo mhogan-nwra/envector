@@ -927,6 +927,7 @@ class Nvector(_Common):
 
         Examples
         --------
+        >>> from tkinter import TclError  # This exception is raised with matplotlib and pytest
         >>> import matplotlib.pyplot as plt
         >>> import envector as nv
         >>> lat = np.arange(0, 10)
@@ -936,8 +937,11 @@ class Nvector(_Common):
         >>> t_i = np.linspace(0, t[-1], 100)
         >>> nvectors_i = nvectors.interpolate(t_i, t, kind='cubic')
         >>> lati, loni, zi = nvectors_i.to_geo_point().latlon_deg
-        >>> h = plt.plot(lon, lat, 'o', loni, lati, '-')
-        >>> plt.show() # doctest: +SKIP
+        >>> try:
+        ...     h = plt.plot(lon, lat, 'o', loni, lati, '-')
+        ...     plt.show() # doctest: +SKIP
+        ... except TclError:
+        ...     pass
         >>> plt.close()
         """
         vectors = np.vstack((self.normal, self.z))
@@ -1042,6 +1046,7 @@ class Nvector(_Common):
 
         Examples
         --------
+        >>> from tkinter import TclError  # This exception is raised when use matplotlib in pytest sometimes
         >>> import matplotlib.pyplot as plt
         >>> import envector as nv
         >>> points = nv.GeoPoint((59.381509, 59.387647),(10.496590, 10.494713), degrees=True)
@@ -1050,17 +1055,20 @@ class Nvector(_Common):
         >>> dx, dy = np.sin(COG_rad[0]), np.cos(COG_rad[0])
         >>> COG = nv.deg(COG_rad)
         >>> p_AB_N = nv.n_EA_E_and_n_EB_E2p_AB_N(nvec.normal[:, :1], nvec.normal[:, 1:]).ravel()
-        >>> ax = plt.figure().gca()
-        >>> _ = ax.plot(0, 0, 'bo', label='A')
-        >>> _ = ax.arrow(0,0, dx*300, dy*300, head_width=20)
-        >>> _ = ax.plot(p_AB_N[1], p_AB_N[0], 'go', label='B')
-        >>> _ = ax.set_title('COG={} degrees'.format(COG))
-        >>> _ = ax.set_xlabel('East [m]')
-        >>> _ = ax.set_ylabel('North [m]')
-        >>> _ = ax.set_xlim(-500, 200)
-        >>> _ = ax.set_aspect('equal', adjustable='box')
-        >>> _ = ax.legend()
-        >>> plt.show() # doctest: +SKIP
+        >>> try:
+        ...     ax = plt.figure().gca()
+        ...     _ = ax.plot(0, 0, 'bo', label='A')
+        ...     _ = ax.arrow(0,0, dx*300, dy*300, head_width=20)
+        ...     _ = ax.plot(p_AB_N[1], p_AB_N[0], 'go', label='B')
+        ...     _ = ax.set_title('COG={} degrees'.format(COG))
+        ...     _ = ax.set_xlabel('East [m]')
+        ...     _ = ax.set_ylabel('North [m]')
+        ...     _ = ax.set_xlim(-500, 200)
+        ...     _ = ax.set_aspect('equal', adjustable='box')
+        ...     _ = ax.legend()
+        ...     plt.show() # doctest: +SKIP
+        ... except TclError:
+        ...     pass
         >>> plt.close()
         """
         frame = self.frame

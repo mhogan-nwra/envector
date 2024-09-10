@@ -702,6 +702,7 @@ def interp_nvectors(
 
     Examples
     --------
+    >>> from tkinter import TclError  # This exception is raised with matplotlib and pytest
     >>> import matplotlib.pyplot as plt
     >>> import envector as nv
     >>> lat, lon = nv.rad(np.arange(0, 10)), np.sin(nv.rad(np.linspace(-90, 70, 10)))
@@ -710,8 +711,11 @@ def interp_nvectors(
     >>> nvectors = nv.lat_lon2n_E(lat, lon)
     >>> nvectors_i = nv.interp_nvectors(t_i, t, nvectors, kind='cubic')
     >>> lati, loni = nv.deg(*nv.n_E2lat_lon(nvectors_i))
-    >>> h = plt.plot(nv.deg(lon), nv.deg(lat), 'o', loni, lati, '-')
-    >>> plt.show()  # doctest: +SKIP
+    >>> try:
+    ...     h = plt.plot(nv.deg(lon), nv.deg(lat), 'o', loni, lati, '-')
+    ...     plt.show()  # doctest: +SKIP
+    ... except TclError:
+    ...     pass
     >>> plt.close()
 
     Interpolate noisy data
@@ -723,8 +727,11 @@ def interp_nvectors(
     >>> nvectors = nv.lat_lon2n_E(lat, lon)
     >>> nvectors_i = nv.interp_nvectors(t_i, t, nvectors, 'cubic', 31)
     >>> [lati, loni] = nv.n_E2lat_lon(nvectors_i)
-    >>> h = plt.plot(nv.deg(lon), nv.deg(lat), 'o', nv.deg(loni), nv.deg(lati), '-')
-    >>> plt.show()  # doctest: +SKIP
+    >>> try:
+    ...     h = plt.plot(nv.deg(lon), nv.deg(lat), 'o', nv.deg(loni), nv.deg(lati), '-')
+    ...     plt.show()  # doctest: +SKIP
+    ... except TclError:
+    ...     pass
     >>> plt.close()
 
 
@@ -893,6 +900,7 @@ def course_over_ground(
 
     Examples
     --------
+    >>> from tkinter import TclError  # This exception is raised with matplotlib and pytest
     >>> import matplotlib.pyplot as plt
     >>> import envector as nv
     >>> lats = nv.rad(59.381509, 59.387647)
@@ -902,17 +910,20 @@ def course_over_ground(
     >>> dx, dy = np.sin(COG_rad[0]), np.cos(COG_rad[0])
     >>> COG = nv.deg(COG_rad)
     >>> p_AB_N = np.asarray(n_EA_E_and_n_EB_E2p_AB_N(nvec[:, :1], nvec[:, 1:])).ravel()
-    >>> ax = plt.figure().gca()
-    >>> _ = ax.plot(0, 0, 'bo', label='A')
-    >>> _ = ax.arrow(0,0, dx*300, dy*300, head_width=20, label='COG')
-    >>> _ = ax.plot(p_AB_N[1], p_AB_N[0], 'go', label='B')
-    >>> _ = ax.set_title('COG={} degrees'.format(COG))
-    >>> _ = ax.set_xlabel('East [m]')
-    >>> _ = ax.set_ylabel('North [m]')
-    >>> _ = ax.set_xlim(-500, 200)
-    >>> _ = ax.set_aspect('equal', adjustable='box')
-    >>> _ = ax.legend()
-    >>> plt.show()  # doctest: +SKIP
+    >>> try:
+    ...     ax = plt.figure().gca()
+    ...     _ = ax.plot(0, 0, 'bo', label='A')
+    ...     _ = ax.arrow(0,0, dx*300, dy*300, head_width=20, label='COG')
+    ...     _ = ax.plot(p_AB_N[1], p_AB_N[0], 'go', label='B')
+    ...     _ = ax.set_title('COG={} degrees'.format(COG))
+    ...     _ = ax.set_xlabel('East [m]')
+    ...     _ = ax.set_ylabel('North [m]')
+    ...     _ = ax.set_xlim(-500, 200)
+    ...     _ = ax.set_aspect('equal', adjustable='box')
+    ...     _ = ax.legend()
+    ...     plt.show()  # doctest: +SKIP
+    ... except TclError:
+    ...     pass
     >>> plt.close()
 
     See also
