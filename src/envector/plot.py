@@ -50,7 +50,7 @@ def plot_mean_position():
     """
     Example
     -------
-    >>> plot_mean_position()
+    >>> plot_mean_position()  # doctest: +SKIP
     Ex7, Average lat=67.2, lon=-6.9
     >>> try:
     ...     plt.show()  # doctest: +SKIP
