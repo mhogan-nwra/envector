@@ -9,8 +9,7 @@ Short version
 * Submit bug reports and feature requests at 
   [GitHub](https://github.com/mhogan-nwra/envector/issues)
 
-* Make pull requests to the ``main`` branch (This branch will
-  change if pull requests become frequent enough).
+* Make pull requests to the ``develop`` branch.
 
 Bug reports
 -----------
@@ -123,7 +122,7 @@ appreciated.
    repository home like github.com/<USER>/envector/actions
 
 10. Submit a pull request through the GitHub website. Pull requests should be
-    made to the ``main`` branch (subject to change).  Note that automated tests will be run on
+    made to the ``develop`` branch (subject to change).  Note that automated tests will be run on
     GitHub actions, but these must be initialized by a member of the team.
 
 
@@ -131,7 +130,7 @@ Pull Request Guidelines
 -----------------------
 
 If you need some code review or feedback while you're developing the code, just
-make a pull request. Pull requests should be made to the ``main`` branch (subject to change).
+make a pull request. Pull requests should be made to the ``develop`` branch (subject to change).
 
 For merging, you should:
 
