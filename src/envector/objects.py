@@ -1790,7 +1790,7 @@ class GeoPath(_GeoPathBase):
 
         Returns
         -------
-        bool_ | ndarray
+        numpy.bool | ndarray
             A boolean scalar or ndarray of booleans.
         """
         point_a, point_b = self.geo_points()
@@ -1819,7 +1819,7 @@ class GeoPath(_GeoPathBase):
 
         Returns
         -------
-        bool_ | ndarray
+        numpy.bool | ndarray
             A boolean scalar or ndarray of booleans.
         """
         distance = np.abs(self.cross_track_distance(point))
@@ -1850,7 +1850,7 @@ class GeoPath(_GeoPathBase):
 
         Returns
         -------
-        bool_ | ndarray
+        numpy.bool | ndarray
             A boolean scalar or ndarray of booleans.
         """
         if radius is None:
@@ -1887,7 +1887,7 @@ class GeoPath(_GeoPathBase):
 
         Returns
         -------
-        bool_ | ndarray
+        numpy.bool | ndarray
             Boolean scalar or boolean vector, true if the point is on the path at its average height.
 
         Notes
