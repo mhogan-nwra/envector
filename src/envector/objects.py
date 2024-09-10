@@ -6,7 +6,7 @@ Object-oriented interface to geodesic functions
 from __future__ import annotations
 # pylint: disable=invalid-name
 import warnings
-from typing import Union, Tuple, Any, Self
+from typing import Union, Tuple, Any
 
 import numpy as np
 from geographiclib.geodesic import Geodesic as _Geodesic
@@ -496,7 +496,7 @@ class GeoPoint(_Common):
         """
         return self.to_nvector().to_ecef_vector()
 
-    def to_geo_point(self) -> Self:
+    def to_geo_point(self) -> GeoPoint:
         """
         Position as GeoPoint object, in this case itself.
 
@@ -890,8 +890,6 @@ class Nvector(_Common):
             Real vector of length m. Vector of interpolation times.
         t : ndarray
             Real vector of length n. Vector of times.
-        nvectors : ndarray
-            3 x n array n-vectors [no unit] decomposed in E.
         kind: str | int
             Specifies the kind of interpolation as a string
             ('linear', 'nearest', 'zero', 'slinear', 'quadratic', 'cubic'
@@ -981,7 +979,7 @@ class Nvector(_Common):
             return GeoPoint(latitude[0], longitude[0], self.z, self.frame)  # Scalar geo_point
         return GeoPoint(latitude, longitude, self.z, self.frame)
 
-    def to_nvector(self) -> Self:
+    def to_nvector(self) -> Nvector:
         """Position as Nvector object, in this case, self.
 
         Returns
@@ -1437,7 +1435,7 @@ class ECEFvector(Pvector):
         p_AB_N = mdot(np.swapaxes(frame.R_EN, 1, 0), p_AB_E[:, None, ...])
         return Pvector(p_AB_N.reshape(3, -1), frame=frame, scalar=self.scalar)
 
-    def to_ecef_vector(self) -> Self:
+    def to_ecef_vector(self) -> ECEFvector:
         """Returns position as ECEFvector object, in this case, itself.
 
         Returns
