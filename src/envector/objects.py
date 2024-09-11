@@ -3,6 +3,7 @@ Object-oriented interface to geodesic functions
 ===============================================
 
 """
+from __future__ import annotations
 # pylint: disable=invalid-name
 import warnings
 from typing import Union, Tuple, Any
@@ -118,7 +119,21 @@ def delta_N(point_a, point_b):
 
 
 def _delta(self, other):
-    """Returns cartesian delta vector from positions a to b decomposed in N."""
+    """Returns cartesian delta vector from positions A to B decomposed in N.
+
+    Parameters
+    ----------
+    self : Nvector | GeoPoint | ECEFvector
+        Position A, decomposed in N.
+    other : Nvector | GeoPoint | ECEFvector
+        Position B, decomposed in N.
+
+    Returns
+    -------
+    Pvector
+        Delta vector from positions A to B, decomposed in N.
+
+    """
     return delta_N(self, other)
 
 
@@ -156,7 +171,14 @@ class _Common:
     _NAMES: Tuple[str, ...] = tuple()
     """Sequence of attribute names for the repr"""
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """Represents the class as a string
+
+        Returns
+        -------
+        str
+            A string like `<CLASS>(<ATTR_A>=..., <ATTR_B>=..., ...)`
+        """
         cname = self.__class__.__name__
         fmt = ', '
         names = self._NAMES if self._NAMES else list(self.__dict__)
@@ -168,16 +190,46 @@ class _Common:
 
         return '{}({})'.format(cname, params)
 
-    def __eq__(self, other):
+    def __eq__(self, other: _Common) -> bool:
+        """Checks for equality by comparing identity or numerical attributes and associated frame is also itself.
+
+        Parameters
+        ----------
+        other : _Common
+            Any subclass of _Common.
+
+        Returns
+        -------
+        bool
+            True if other instance is self or numerical attributes are close and associated frame is also itself.
+        """
         try:
             return self is other or self._is_equal_to(other, rtol=1e-12, atol=1e-14)
         except (AttributeError, NotImplementedError):
             return False
 
-    def __ne__(self, other):
+    def __ne__(self, other: _Common) -> bool:
+        """Checks for inequality by comparing identity or numerical attributes and associated frame is also itself.
+
+        This is the logical negation of :py:meth:`envector.objects._Common.__eq__`.
+
+        Parameters
+        ----------
+        other : _Common
+            Any subclass of _Common.
+
+        Returns
+        -------
+        bool
+            False if other instance is self or numerical attributes are close and associated frame is also itself.
+
+        See Also
+        --------
+        __eq__
+        """
         return not self.__eq__(other)
 
-    def _is_equal_to(self, other: Any, rtol: float, atol: float) -> bool:
+    def _is_equal_to(self, other: _Common, rtol: float, atol: float) -> bool:
         """Compares another object attributes of the same type"""
         raise NotImplementedError
 
@@ -284,6 +336,18 @@ class GeoPoint(_Common):
     frame : FrameE
         Reference ellipsoid. The default ellipsoid model used is WGS84
 
+    Notes
+    -----
+    The following arithmetic and inequality operators are defined for a :py:class:`envector.objects.GeoPoint`.
+
+    __eq__ : bool
+        Equality operator (`==`), which compares the numerical values of longitude, latitude, depth, and identical
+        frames.
+    __ne__ : bool
+        Inequality operator (`!=`), which compares the numerical values of longitude, latitude, depth, and identical
+        frames.
+
+
     Examples
     --------
     Solve geodesic problems.
@@ -322,7 +386,7 @@ class GeoPoint(_Common):
     """Geodetic longitude [rad]"""
     z: ndarray
     """Depth(s) [m] relative to the ellipsoid (depth = -height)"""
-    frame: _FrameEBase
+    frame: FrameE
     """Frame ellipsoid"""
 
     def __init__(
@@ -338,7 +402,7 @@ class GeoPoint(_Common):
         self.latitude, self.longitude, self.z = np.broadcast_arrays(latitude, longitude, z)
         self.frame = _default_frame(frame)
 
-    def _is_equal_to(self, other, rtol=1e-12, atol=1e-14):
+    def _is_equal_to(self, other: GeoPoint, rtol: float=1e-12, atol: float=1e-14) -> bool:
         def diff(angle1, angle2):
             pi2 = 2 * np.pi
             delta = (angle1 - angle2) % pi2
@@ -418,7 +482,7 @@ class GeoPoint(_Common):
                 and np.size(self.latitude) == 1
                 and np.size(self.longitude) == 1)
 
-    def to_ecef_vector(self):
+    def to_ecef_vector(self) -> ECEFvector:
         """Position as ECEFvector object.
 
         Returns
@@ -432,7 +496,7 @@ class GeoPoint(_Common):
         """
         return self.to_nvector().to_ecef_vector()
 
-    def to_geo_point(self):
+    def to_geo_point(self) -> GeoPoint:
         """
         Position as GeoPoint object, in this case itself.
 
@@ -447,7 +511,7 @@ class GeoPoint(_Common):
         """
         return self
 
-    def to_nvector(self):
+    def to_nvector(self) -> Nvector:
         """
         Position as Nvector object.
 
@@ -471,7 +535,7 @@ class GeoPoint(_Common):
         distance: Union[int, float, list, tuple, ndarray],
         azimuth: Union[int, float, list, tuple, ndarray],
         degrees: bool
-    ):
+    ) -> Tuple[GeoPoint, Union[float64, ndarray]]:
         """Returns the great circle solution using the nvector method.
 
         Parameters
@@ -504,7 +568,7 @@ class GeoPoint(_Common):
         long_unroll: bool=False,
         degrees: bool=False,
         method: str='ellipsoid'
-    ):
+    ) -> Tuple[GeoPoint, Union[float64, ndarray]]:
         """
         Returns position b computed from current position, distance and azimuth.
 
@@ -540,7 +604,7 @@ class GeoPoint(_Common):
         azimuth: Union[int, float, list, tuple, ndarray],
         long_unroll: bool=False,
         degrees: bool=False
-    ):
+    ) -> Tuple[GeoPoint, Union[float64, ndarray]]:
         """Returns the exact ellipsoidal solution using the method of Karney.
 
         Parameters
@@ -579,7 +643,7 @@ class GeoPoint(_Common):
 
     def distance_and_azimuth(
         self,
-        point,
+        point: GeoPoint,
         degrees: bool=False,
         method: str='ellipsoid'
     ) -> Tuple[Union[float64, ndarray], Union[float64, ndarray], Union[float64, ndarray]]:
@@ -588,7 +652,7 @@ class GeoPoint(_Common):
 
         Parameters
         ----------
-        point : GeoPoint | Nvector | Pvector | ECEFvector
+        point : GeoPoint
             Latitude and longitude of position B.
         degrees : bool
             Azimuths are returned in degrees if True otherwise in radians.
@@ -634,14 +698,14 @@ class GeoPoint(_Common):
 
     def _distance_and_azimuth_greatcircle(
         self,
-        point,
+        point: GeoPoint,
         degrees: bool
     ) -> Tuple[Union[float64, ndarray], Union[float64, ndarray], Union[float64, ndarray]]:
-        """
+        """Returns great-circle distance between positions as well as the direction.
 
         Parameters
         ----------
-        point : GeoPoint | Nvector | Pvector | ECEFvector
+        point : GeoPoint
             Other point
         degrees : bool
             Azimuths are returned in degrees if True otherwise in radians.
@@ -649,6 +713,11 @@ class GeoPoint(_Common):
         Returns
         -------
         tuple[float64 | ndarray, float64 | ndarray, float64 | ndarray]
+            distance: real scalar or vector of length n.
+                ellipsoidal distance [m] between position a and b at their average height.
+            azimuth_a, azimuth_b: real scalars or vectors of length n.
+                direction [rad or deg] of line at position a and b relative to
+                North, respectively.
         """
         n_a = self.to_nvector()
         n_b = point.to_nvector()
@@ -668,14 +737,14 @@ class GeoPoint(_Common):
 
     def _distance_and_azimuth_ellipsoid(
         self,
-        point,
+        point: GeoPoint,
         degrees: bool
     ) -> Tuple[Union[float64, ndarray], Union[float64, ndarray], Union[float64, ndarray]]:
         """
 
         Parameters
         ----------
-        point : GeoPoint | Nvector | Pvector | ECEFvector
+        point : GeoPoint
             Other point
         degrees : bool
             Azimuths are returned in degrees if True otherwise in radians.
@@ -725,6 +794,36 @@ class Nvector(_Common):
     given into this function as n-vector, n_EB_E and a depth, z relative to the
     ellipsiod.
 
+    The following arithmetic and inequality operators are defined for a :py:class:`envector.objects.Nvector`.
+
+    __eq__ : bool
+        Equality operator (`==`), which compares the numerical values of the normal vector, depth (`z`), and identical
+        frames.
+    __ne__ : bool
+        Inequality operator (`!=`), which compares the numerical values of the normal vector, depth (`z`), and identical
+        frames.
+    __neg__ : Nvector
+        Negation operator (`-`) that returns a new Nvector with negated normal vector and depth, see
+        :py:meth:`envector.objects.Nvector.__neg__` for more details.
+    __add__ : Nvector
+        Additional operator (`+`) adds self with another Nvector in the same frame, see
+        :py:meth:`envector.objects.Nvector.__add__` for more details.
+    __sub__ : Nvector
+        Subtraction operator (`-`) subtract self with another Nvector in the same frame, see
+        :py:meth:`envector.objects.Nvector.__add__` for more details.
+    __mul__ : Nvector
+        Multiplication operator (`*`) multiplies the `normal` and `z` attributes with a scalar,
+        see :py:meth:`envector.objects.Nvector.__mul__` for more details.
+    __div__ : Nvector
+        Division operator (`/`) divides the `normal` and `z` attributes with a scalar,
+        see :py:meth:`envector.objects.Nvector.__mul__` for more details.
+    __radd__ : Nvector
+        Right-hand-side addition operator (`+`) is also the :py:meth:`envector.objects.Nvector.__add__` operator.
+    __rmul__ : Nvector
+        Right-hand-side subtraction operator (`-`) is also the :py:meth:`envector.objects.Nvector.__mul__` operator.
+    __truediv__ : Nvector
+        The true division operator (`//`) is also :py:meth:`envector.objects.Nvector.__div__` operator.
+
     Examples
     --------
     >>> import envector as nv
@@ -747,7 +846,7 @@ class Nvector(_Common):
     """Normal vector(s)"""
     z: Union[int, float, ndarray]
     """Depth(s) [m]"""
-    frame: _FrameEBase
+    frame: FrameE
     """Reference ellipsoid"""
 
     def __init__(
@@ -760,6 +859,18 @@ class Nvector(_Common):
         self.z = z
         self.frame = _default_frame(frame)
 
+    @property
+    def scalar(self) -> bool:
+        """Is the position is a scalar point?
+
+        Returns
+        -------
+        bool
+            True if the position is a scalar point (i.e. depth `z` has no dimensions and the n-vector is shape is
+            `(3, 1)`)
+        """
+        return np.ndim(self.z) == 0 and self.normal.shape[1] == 1
+
     def interpolate(
         self,
         t_i: ndarray,
@@ -769,7 +880,7 @@ class Nvector(_Common):
         polyorder: int=2,
         mode: str='interp',
         cval: Union[int, float]=0.0
-    ):
+    ) -> Nvector:
         """
         Returns interpolated values from nvector data.
 
@@ -779,8 +890,6 @@ class Nvector(_Common):
             Real vector of length m. Vector of interpolation times.
         t : ndarray
             Real vector of length n. Vector of times.
-        nvectors : ndarray
-            3 x n array n-vectors [no unit] decomposed in E.
         kind: str | int
             Specifies the kind of interpolation as a string
             ('linear', 'nearest', 'zero', 'slinear', 'quadratic', 'cubic'
@@ -816,6 +925,7 @@ class Nvector(_Common):
 
         Examples
         --------
+        >>> from tkinter import TclError  # This exception is raised with matplotlib and pytest
         >>> import matplotlib.pyplot as plt
         >>> import envector as nv
         >>> lat = np.arange(0, 10)
@@ -825,8 +935,11 @@ class Nvector(_Common):
         >>> t_i = np.linspace(0, t[-1], 100)
         >>> nvectors_i = nvectors.interpolate(t_i, t, kind='cubic')
         >>> lati, loni, zi = nvectors_i.to_geo_point().latlon_deg
-        >>> h = plt.plot(lon, lat, 'o', loni, lati, '-')
-        >>> plt.show() # doctest: +SKIP
+        >>> try:
+        ...     h = plt.plot(lon, lat, 'o', loni, lati, '-')
+        ...     plt.show() # doctest: +SKIP
+        ... except TclError:
+        ...     pass
         >>> plt.close()
         """
         vectors = np.vstack((self.normal, self.z))
@@ -834,7 +947,7 @@ class Nvector(_Common):
         normal = unit(vectors_i[:3], norm_zero_vector=np.nan)
         return Nvector(normal, z=vectors_i[3], frame=self.frame)
 
-    def to_ecef_vector(self):
+    def to_ecef_vector(self) -> ECEFvector:
         """
         Returns position as ECEFvector object.
 
@@ -852,11 +965,6 @@ class Nvector(_Common):
         scalar = self.scalar
         return ECEFvector(pvector, self.frame, scalar=scalar)
 
-    @property
-    def scalar(self):
-        """True if the position is a scalar point"""
-        return np.ndim(self.z) == 0 and self.normal.shape[1] == 1
-
     def to_geo_point(self) -> GeoPoint:
         """
         Returns position as GeoPoint object.
@@ -871,13 +979,17 @@ class Nvector(_Common):
             return GeoPoint(latitude[0], longitude[0], self.z, self.frame)  # Scalar geo_point
         return GeoPoint(latitude, longitude, self.z, self.frame)
 
-    def to_nvector(self):
+    def to_nvector(self) -> Nvector:
         """Position as Nvector object, in this case, self.
 
-        See also
-        --------
+        Returns
+        -------
         Nvector
             Self
+
+        See Also
+        --------
+        Nvector
         """
         return self
 
@@ -932,6 +1044,7 @@ class Nvector(_Common):
 
         Examples
         --------
+        >>> from tkinter import TclError  # This exception is raised when use matplotlib in pytest sometimes
         >>> import matplotlib.pyplot as plt
         >>> import envector as nv
         >>> points = nv.GeoPoint((59.381509, 59.387647),(10.496590, 10.494713), degrees=True)
@@ -940,23 +1053,26 @@ class Nvector(_Common):
         >>> dx, dy = np.sin(COG_rad[0]), np.cos(COG_rad[0])
         >>> COG = nv.deg(COG_rad)
         >>> p_AB_N = nv.n_EA_E_and_n_EB_E2p_AB_N(nvec.normal[:, :1], nvec.normal[:, 1:]).ravel()
-        >>> ax = plt.figure().gca()
-        >>> _ = ax.plot(0, 0, 'bo', label='A')
-        >>> _ = ax.arrow(0,0, dx*300, dy*300, head_width=20)
-        >>> _ = ax.plot(p_AB_N[1], p_AB_N[0], 'go', label='B')
-        >>> _ = ax.set_title('COG={} degrees'.format(COG))
-        >>> _ = ax.set_xlabel('East [m]')
-        >>> _ = ax.set_ylabel('North [m]')
-        >>> _ = ax.set_xlim(-500, 200)
-        >>> _ = ax.set_aspect('equal', adjustable='box')
-        >>> _ = ax.legend()
-        >>> plt.show() # doctest: +SKIP
+        >>> try:
+        ...     ax = plt.figure().gca()
+        ...     _ = ax.plot(0, 0, 'bo', label='A')
+        ...     _ = ax.arrow(0,0, dx*300, dy*300, head_width=20)
+        ...     _ = ax.plot(p_AB_N[1], p_AB_N[0], 'go', label='B')
+        ...     _ = ax.set_title('COG={} degrees'.format(COG))
+        ...     _ = ax.set_xlabel('East [m]')
+        ...     _ = ax.set_ylabel('North [m]')
+        ...     _ = ax.set_xlim(-500, 200)
+        ...     _ = ax.set_aspect('equal', adjustable='box')
+        ...     _ = ax.legend()
+        ...     plt.show() # doctest: +SKIP
+        ... except TclError:
+        ...     pass
         >>> plt.close()
         """
         frame = self.frame
         return course_over_ground(self.normal, a=frame.a, f=frame.f, R_Ee=frame.R_Ee, **options)
 
-    def mean(self):
+    def mean(self) -> Nvector:
         """Mean position of the n-vectors
 
         Returns
@@ -972,32 +1088,85 @@ class Nvector(_Common):
                                          new_name='mean',
                                          message="Will be removed in version 1.0.0")
 
-    def _is_equal_to(self, other, rtol=1e-12, atol=1e-14):
+    def _is_equal_to(self, other: Nvector, rtol=1e-12, atol=1e-14):
         options = dict(rtol=rtol, atol=atol)
         return (allclose(self.normal, other.normal, **options)
                 and allclose(self.z, other.z, **options)
                 and self.frame == other.frame)
 
-    def __add__(self, other):
+    def __add__(self, other: Nvector) -> Nvector:
+        """Vector addition between to n-vectors
+
+        Parameters
+        ----------
+        other : Nvector
+            Another n-vector
+
+        Returns
+        -------
+        Nvector
+            A new n-vector
+        """
         _check_frames(self, other)
         return self.frame.Nvector(self.normal + other.normal, self.z + other.z)
 
-    def __sub__(self, other):
+    def __sub__(self, other: Nvector) -> Nvector:
+        """Vector subtraction between to n-vectors
+
+        Parameters
+        ----------
+        other : Nvector
+            Another n-vector
+
+        Returns
+        -------
+        Nvector
+            A new n-vector
+        """
         _check_frames(self, other)
         return self.frame.Nvector(self.normal - other.normal, self.z - other.z)
 
-    def __neg__(self):
+    def __neg__(self) -> Nvector:
+        """Vector negation of a n-vector
+
+        Returns
+        -------
+        Nvector
+            A new n-vector
+        """
         return self.frame.Nvector(-self.normal, -self.z)
 
-    def __mul__(self, scalar):
-        """elementwise multiplication"""
+    def __mul__(self, scalar: Union[int, float, float64]) -> Union[Nvector, NotImplemented]:
+        """Elementwise multiplication with a scalar
+
+        Parameters
+        ----------
+        scalar : int | float | float64
+            A scalar-like quantity that supports ndarray.__mul__
+
+        Returns
+        -------
+        Nvector | NotImplemented
+            A scaled n-vector if implemented. Else :py:obj:`NotImplemented`.
+        """
 
         if not isinstance(scalar, Nvector):
             return self.frame.Nvector(self.normal * scalar, self.z * scalar)
         return NotImplemented  # 'Only scalar multiplication is implemented'
 
-    def __div__(self, scalar):
-        """elementwise division"""
+    def __div__(self, scalar: Union[int, float, float64]) -> Union[Nvector, NotImplemented]:
+        """Elementwise division with a scalar
+
+        Parameters
+        ----------
+        scalar : int | float | float64
+            A scalar-like quantity that supports ndarray.__div__
+
+        Returns
+        -------
+        Nvector | NotImplemented
+            A scaled n-vector if implemented. Else :py:obj:`NotImplemented`.
+        """
         if not isinstance(scalar, Nvector):
             return self.frame.Nvector(self.normal / scalar, self.z / scalar)
         return NotImplemented  # 'Only scalar division is implemented'
@@ -1027,11 +1196,23 @@ class Pvector(_Common):
         Reference ellipsoid
     scalar : bool
         False if input `pvector` has shape (3, >=2) or forced at init.
+
+    Notes
+    -----
+    The following arithmetic and inequality operators are defined for a :py:class:`envector.objects.Pvector`.
+
+    __eq__ : bool
+        Equality operator (`==`), which compares the numerical values of the pvector, and identical
+        frames.
+    __ne__ : bool
+        Inequality operator (`!=`), which compares the numerical values of the pvector, and identical
+        frames.
+
     """
 
     _NAMES = ('pvector', 'frame', 'scalar')
     """Sequence of attribute names for the repr"""
-    pvector: Union[list, tuple, ndarray]
+    pvector: ndarray
     """Position array-like, must be shape (3, n, m, ...) with n>0"""
     frame: Union[_LocalFrameBase, _FrameEBase]
     """Reference ellipsoid"""
@@ -1050,12 +1231,71 @@ class Pvector(_Common):
         self.frame = frame
         self.scalar = scalar
 
-    def _is_equal_to(self, other, rtol=1e-12, atol=1e-14):
-        options = dict(rtol=rtol, atol=atol)
-        return (allclose(self.pvector, other.pvector, **options)
-                and self.frame == other.frame)
+    @property
+    def length(self) -> Union[float64, ndarray]:
+        """Length of the pvector.
 
-    def to_ecef_vector(self):
+        Returns
+        -------
+        float64 | ndarray
+            A scalar if :py:meth:`envector.objects.Pvector.scaler` is True, else an array of lengths.
+        """
+        lengths = norm(self.pvector, axis=0)
+        if self.scalar:
+            return lengths[0]
+        return lengths
+
+    @property
+    def azimuth_deg(self) -> Union[float64, ndarray]:
+        """Azimuth in degrees clockwise relative to the x-axis.
+
+        Returns
+        -------
+        float64 | ndarray
+            A scalar if :py:meth:`envector.objects.Pvector.scaler` is True, else an array of lengths.
+        """
+        return deg(self.azimuth)
+
+    @property
+    def azimuth(self) -> Union[float64, ndarray]:
+        """Azimuth in radians clockwise relative to the x-axis.
+
+        Returns
+        -------
+        float64 | ndarray
+            A scalar if :py:meth:`envector.objects.Pvector.scaler` is True, else an array of lengths.
+        """
+        p_AB_N = self.pvector
+        if self.scalar:
+            return np.arctan2(p_AB_N[1], p_AB_N[0])[0]
+        return np.arctan2(p_AB_N[1], p_AB_N[0])
+
+    @property
+    def elevation_deg(self) -> Union[float64, ndarray]:
+        """Elevation in degrees relative to the xy-plane. (Positive downwards in a NED frame)
+
+        Returns
+        -------
+        float64 | ndarray
+            A scalar if :py:meth:`envector.objects.Pvector.scaler` is True, else an array of lengths.
+        """
+        return deg(self.elevation)
+
+    @property
+    def elevation(self) -> Union[float64, ndarray]:
+        """Elevation in radians relative to the xy-plane. (Positive downwards in a NED frame)
+
+        Returns
+        -------
+        float64 | ndarray
+            A scalar if :py:meth:`envector.objects.Pvector.scaler` is True, else an array of lengths.
+        """
+        z = self.pvector[2]
+        if self.scalar:
+            return np.arcsin(z / self.length)[0]
+        return np.arcsin(z / self.length)
+
+    def to_ecef_vector(self) -> ECEFvector:
         """Returns position as ECEFvector object.
 
         Returns
@@ -1102,39 +1342,10 @@ class Pvector(_Common):
 
     delta_to = _delta
 
-    @property
-    def length(self) -> Union[float64, ndarray]:
-        """Length of the pvector."""
-        lengths = norm(self.pvector, axis=0)
-        if self.scalar:
-            return lengths[0]
-        return lengths
-
-    @property
-    def azimuth_deg(self) -> Union[float64, ndarray]:
-        """Azimuth in degree clockwise relative to the x-axis."""
-        return deg(self.azimuth)
-
-    @property
-    def azimuth(self) -> Union[float64, ndarray]:
-        """Azimuth in radian clockwise relative to the x-axis."""
-        p_AB_N = self.pvector
-        if self.scalar:
-            return np.arctan2(p_AB_N[1], p_AB_N[0])[0]
-        return np.arctan2(p_AB_N[1], p_AB_N[0])
-
-    @property
-    def elevation_deg(self) -> Union[float64, ndarray]:
-        """Elevation in degree relative to the xy-plane. (Positive downwards in a NED frame)"""
-        return deg(self.elevation)
-
-    @property
-    def elevation(self) -> Union[float64, ndarray]:
-        """Elevation in radian relative to the xy-plane. (Positive downwards in a NED frame)"""
-        z = self.pvector[2]
-        if self.scalar:
-            return np.arcsin(z / self.length)[0]
-        return np.arcsin(z / self.length)
+    def _is_equal_to(self, other: Pvector, rtol: float=1e-12, atol: float=1e-14) -> bool:
+        options = dict(rtol=rtol, atol=atol)
+        return (allclose(self.pvector, other.pvector, **options)
+                and self.frame == other.frame)
 
 
 @use_docstring(_examples.get_examples_no_header([3, 4]))
@@ -1165,6 +1376,24 @@ class ECEFvector(Pvector):
     given into this function as p-vector, p_EB_E relative to the center of the
     frame.
 
+    The following arithmetic and inequality operators are defined for a :py:class:`envector.objects.ECEFvector`.
+
+    __eq__ : bool
+        Equality operator (`==`), which compares the numerical values of the p-vector and identical
+        frames.
+    __ne__ : bool
+        Inequality operator (`!=`), which compares the numerical values of the p-vector and identical
+        frames.
+    __neg__ : Nvector
+        Negation operator (`-`) that returns a new ECEFvector with negated p-vector and frame, see
+        :py:meth:`envector.objects.ECEFvector.__neg__` for more details.
+    __add__ : Nvector
+        Additional operator (`+`) adds self with another ECEFvector in the same frame, see
+        :py:meth:`envector.objects.ECEFvector.__add__` for more details.
+    __sub__ : Nvector
+        Subtraction operator (`-`) subtract self with another ECEFvector in the same frame, see
+        :py:meth:`envector.objects.ECEFvector.__add__` for more details.
+
     Examples
     --------
     {super}
@@ -1179,10 +1408,10 @@ class ECEFvector(Pvector):
         pvector: Union[list, tuple, ndarray],
         frame: Union[_FrameEBase, None]=None,
         scalar: Union[bool, None]=None
-    ):
+    ) -> None:
         super(ECEFvector, self).__init__(pvector, _default_frame(frame), scalar)
 
-    def change_frame(self, frame) -> Pvector:
+    def change_frame(self, frame: Union[FrameB, FrameN, FrameL]) -> Pvector:
         """
         Converts to Cartesian position vector in another frame
 
@@ -1206,7 +1435,7 @@ class ECEFvector(Pvector):
         p_AB_N = mdot(np.swapaxes(frame.R_EN, 1, 0), p_AB_E[:, None, ...])
         return Pvector(p_AB_N.reshape(3, -1), frame=frame, scalar=self.scalar)
 
-    def to_ecef_vector(self):
+    def to_ecef_vector(self) -> ECEFvector:
         """Returns position as ECEFvector object, in this case, itself.
 
         Returns
@@ -1254,17 +1483,48 @@ class ECEFvector(Pvector):
 
     delta_to = _delta
 
-    def __add__(self, other):
+    def __add__(self, other: ECEFvector) -> ECEFvector:
+        """Adds two ECEFvector objects p-vectors in the same frame.
+
+        Parameters
+        ----------
+        other : ECEFvector
+            Another ECEFvector
+
+        Returns
+        -------
+        ECEFvector
+            A new ECEFvector
+        """
         _check_frames(self, other)
         scalar = self.scalar and other.scalar
         return ECEFvector(self.pvector + other.pvector, self.frame, scalar)
 
-    def __sub__(self, other):
+    def __sub__(self, other: ECEFvector) -> ECEFvector:
+        """Subtracts two ECEFvector objects p-vectors in the same frame.
+
+        Parameters
+        ----------
+        other : ECEFvector
+            Another ECEFvector
+
+        Returns
+        -------
+        ECEFvector
+            A new ECEFvector
+        """
         _check_frames(self, other)
         scalar = self.scalar and other.scalar
         return ECEFvector(self.pvector - other.pvector, self.frame, scalar)
 
-    def __neg__(self):
+    def __neg__(self) -> ECEFvector:
+        """Negates the ECEFvector p-vector in the same frame.
+
+        Returns
+        -------
+        ECEFvector
+            A new ECEFvector
+        """
         return ECEFvector(-self.pvector, self.frame, self.scalar)
 
 
@@ -1302,6 +1562,13 @@ class GeoPath(_GeoPathBase):
     In this case the GeoPath instance represents all the paths between the positions
     of A and the corresponding positions of B.
 
+    The following arithmetic and inequality operators are defined for a :py:class:`envector.objects.GeoPath`.
+
+    __eq__ : bool
+        Equality operator (`==`), which compares the numerical attributes and frames of point A and point B.
+    __ne__ : bool
+        Inequality operator (`!=`), which compares the numerical attributes and frames of point A and point B.
+
     Examples
     --------
     {super}
@@ -1317,37 +1584,84 @@ class GeoPath(_GeoPathBase):
         self.point_b = point_b
 
     @property
-    def positionA(self):
+    def positionA(self) -> Union[Nvector, GeoPoint, ECEFvector]:
         """positionA is deprecated, use point_a instead!"""  # @ReservedAssignment
         warnings.warn("positionA is deprecated, use point_a instead!",
                       category=DeprecationWarning, stacklevel=2)
         return self.point_a
 
     @property
-    def positionB(self):
+    def positionB(self) -> Union[Nvector, GeoPoint, ECEFvector]:
         """positionB is deprecated, use point_b instead!"""  # @ReservedAssignment
         warnings.warn("positionB is deprecated, use point_b instead!",
                       category=DeprecationWarning, stacklevel=2)
         return self.point_b
 
     def nvectors(self) -> Tuple[Nvector, Nvector]:
-        """Returns point_a and point_b as n-vectors"""
+        """Returns point_a and point_b as n-vectors
+
+        Returns
+        -------
+        tuple[Nvector, Nvector]
+            A 2-tuple of point A and point B, in that order, each as a Nvector.
+
+        See Also
+        --------
+        Nvector
+        """
         return self.point_a.to_nvector(), self.point_b.to_nvector()
 
     def geo_points(self) -> Tuple[GeoPoint, GeoPoint]:
-        """Returns point_a and point_b as geo-points"""
+        """Returns point_a and point_b as geo-points
+
+        Returns
+        -------
+        tuple[GeoPoint, GeoPoint]
+            A 2-tuple of point A and point B, in that order, each as a GeoPoint.
+
+        See Also
+        --------
+        GeoPoint
+        """
         return self.point_a.to_geo_point(), self.point_b.to_geo_point()
 
     def ecef_vectors(self) -> Tuple[ECEFvector, ECEFvector]:
-        """Returns point_a and point_b as  ECEF-vectors"""
+        """Returns point_a and point_b as ECEF-vectors
+
+        Returns
+        -------
+        tuple[ECEFvector, ECEFvector]
+            A 2-tuple of point A and point B, in that order, each as a ECEFvector.
+
+        See Also
+        --------
+        ECEFvector
+        """
         return self.point_a.to_ecef_vector(), self.point_b.to_ecef_vector()
 
     def nvector_normals(self) -> Tuple[ndarray, ndarray]:
-        """Returns nvector normals for position a and b"""
+        """Returns n-vector normals for position a and b
+
+        Returns
+        -------
+        tuple[ndarray, ndarray]
+            A 2-tuple of normal vectors of point A and point B, in that order.
+
+        See Also
+        --------
+        Nvector, nvectors
+        """
         nvector_a, nvector_b = self.nvectors()
         return nvector_a.normal, nvector_b.normal
 
     def _get_average_radius(self) -> Union[float, float64, ndarray]:
+        """Calculates the average radius of an imaginary sphere along the path in meters
+
+        Returns
+        -------
+        float | float64 | ndarray
+            A scalar or array in meters
+        """
         p_E1_E, p_E2_E = self.ecef_vectors()
         radius = (p_E1_E.length + p_E2_E.length) / 2
         return radius
@@ -1356,7 +1670,7 @@ class GeoPath(_GeoPathBase):
         self,
         point: Union[Nvector, GeoPoint, ECEFvector],
         method: str='greatcircle',
-        radius: Union[float, None]=None
+        radius: Union[int, float, None]=None
     ) -> Union[float64, ndarray]:
         """
         Returns cross track distance from path to point.
@@ -1367,8 +1681,8 @@ class GeoPath(_GeoPathBase):
             position to measure the cross track distance to.
         method: 'greatcircle' or 'euclidean'
             defining distance calculated.
-        radius : float | None
-            radius of sphere in [m]. Default is the average height of points A and B.
+        radius : int | float | None
+            Real scalar radius of a sphere in meters. If None, default is the average height of points A and B
 
         Returns
         -------
@@ -1391,7 +1705,7 @@ class GeoPath(_GeoPathBase):
     def track_distance(
         self,
         method: str='greatcircle',
-        radius: Union[float, None]=None
+        radius: Union[int, float, None]=None
     ) -> Union[float64, ndarray]:
         """
         Returns the path distance computed at the average height.
@@ -1400,14 +1714,13 @@ class GeoPath(_GeoPathBase):
         ----------
         method : str
             'greatcircle', 'euclidean' or 'ellipsoidal' defining distance calculated.
-        radius : float | None
-            Real scalar radius of sphere. Default is the average height of points A and B
-
+        radius : int | float | None
+            Real scalar radius of a sphere in meters. If None, default is the average height of points A and B
 
         Returns
         -------
         float64 | ndarray
-            path distance computed at the average height in [m]
+            path distance computed at the average height in meters
 
         """
         if method[:2] in {'ex', 'el'}:  # exact or ellipsoidal
@@ -1424,7 +1737,7 @@ class GeoPath(_GeoPathBase):
             return distance[0]  # scalar track distance
         return distance
 
-    def intersect(self, path: _GeoPathBase) -> Nvector:
+    def intersect(self, path: GeoPath) -> Nvector:
         """
         Returns the intersection(s) between the great circles of the two paths
 
@@ -1456,7 +1769,28 @@ class GeoPath(_GeoPathBase):
                              new_name='intersect',
                              message="Will remove in version 1")
 
-    def _on_ellipsoid_path(self, point, rtol=1e-6, atol=1e-8):
+    def _on_ellipsoid_path(
+        self,
+        point: Union[Nvector, GeoPoint, ECEFvector],
+        rtol: float=1e-6,
+        atol: float=1e-8
+    ) -> Union[bool_, ndarray]:
+        """Determines if a point is on this ellipsoidal path.
+
+        Parameters
+        ----------
+        point : Nvector | GeoPoint | ECEFvector
+            A point that can be converted to a GeoPoint
+        rtol : float
+            Relative tolerance (default = 1e-6)
+        atol : float
+            Absolute tolerance (default = 1e-8)
+
+        Returns
+        -------
+        numpy.bool | ndarray
+            A boolean scalar or ndarray of booleans.
+        """
         point_a, point_b = self.geo_points()
         point_c = point.to_geo_point()
         z = (point_a.z + point_b.z) * 0.5
@@ -1467,15 +1801,56 @@ class GeoPath(_GeoPathBase):
                    | ((distance_ab >= distance_ac)
                       & isclose(azimuth_ac, azimuth_ab, rtol=rtol, atol=atol))))
 
-    def on_great_circle(self, point, atol=1e-8) -> Union[bool_, ndarray]:
-        """Returns True if point is on the great circle within a tolerance."""
+    def on_great_circle(
+        self,
+        point: Union[GeoPoint, Nvector, ECEFvector],
+        atol: float=1e-8
+    ) -> Union[bool_, ndarray]:
+        """Returns True if point is on the great circle within a tolerance.
+
+        Parameters
+        ----------
+        point : Nvector | GeoPoint | ECEFvector
+            Position to measure the cross track distance to.
+        atol : float
+            Absolute tolerance (default=1.e-8)
+
+        Returns
+        -------
+        numpy.bool | ndarray
+            A boolean scalar or ndarray of booleans.
+        """
         distance = np.abs(self.cross_track_distance(point))
         result = isclose(distance, 0, atol=atol)
         if np.ndim(result) == 0:
             return result[()]
         return result
 
-    def _on_great_circle_path(self, point, radius=None, rtol=1e-9, atol=1e-8) -> Union[bool_, ndarray]:
+    def _on_great_circle_path(
+        self,
+        point : Union[Nvector, GeoPoint, ECEFvector],
+        radius: Union[int, float, None]=None,
+        rtol: float=1e-9,
+        atol: float=1e-8
+    ) -> Union[bool_, ndarray]:
+        """Returns True if point is on the great circle within a relative and absolute tolerance.
+
+        Parameters
+        ----------
+        point : Nvector | GeoPoint | ECEFvector
+            Point that might be on the great circle
+        radius : int | float | None
+            Real scalar radius of a sphere in meters. If None, default is the average height of points A and B
+        rtol : float
+            Relative tolerance, default = 1e-9
+        atol : float
+            Absolute tolerance, default = 1e-8
+
+        Returns
+        -------
+        numpy.bool | ndarray
+            A boolean scalar or ndarray of booleans.
+        """
         if radius is None:
             radius = self._get_average_radius()
         n_a, n_b = self.nvectors()
@@ -1501,7 +1876,7 @@ class GeoPath(_GeoPathBase):
         ----------
         point : Nvector | GeoPoint | ECEFvector
             Point to test
-        method: 'greatcircle' or 'ellipsoid'
+        method : 'greatcircle' or 'ellipsoid'
             defining the path.
         rtol : float
             The relative tolerance parameter.
@@ -1510,8 +1885,8 @@ class GeoPath(_GeoPathBase):
 
         Returns
         -------
-        bool_ | ndarray
-            Bool scalar or boolean vector, true if the point is on the path at its average height.
+        numpy.bool | ndarray
+            Boolean scalar or boolean vector, true if the point is on the path at its average height.
 
         Notes
         -----
@@ -1547,7 +1922,21 @@ class GeoPath(_GeoPathBase):
             return self._on_ellipsoid_path(point, rtol=rtol, atol=atol)
         return self._on_great_circle_path(point, rtol=rtol, atol=atol)
 
-    def _closest_point_on_great_circle(self, point):
+    def _closest_point_on_great_circle(
+        self,
+        point: GeoPoint
+    ) -> Nvector:
+        """Returns closest point on great circle path to the point.
+
+        Parameters
+        ----------
+        point : GeoPoint
+
+        Returns
+        -------
+        Nvector
+
+        """
         point_c = point.to_nvector()
         point_a, point_b = self.nvectors()
         path = (point_a.normal, point_b.normal)
@@ -1555,19 +1944,22 @@ class GeoPath(_GeoPathBase):
         normal_d = closest_point_on_great_circle(path, point_c.normal)
         return point_c.frame.Nvector(normal_d, z)
 
-    def closest_point_on_great_circle(self, point: GeoPoint) -> GeoPoint:
+    def closest_point_on_great_circle(
+        self,
+        point: GeoPoint
+    ) -> GeoPoint:
         """
         Returns closest point on great circle path to the point.
 
         Parameters
         ----------
         point : GeoPoint
-            point of intersection between paths
+            Point of intersection between paths
 
         Returns
         -------
         GeoPoint
-            closest point on path.
+            Closest point on path.
 
         Notes
         -----
@@ -1636,7 +2028,27 @@ class GeoPath(_GeoPathBase):
         # TODO: vectorize this
         return self._closest_point_on_path(point)
 
-    def _closest_point_on_path(self, point: GeoPoint) -> GeoPoint:
+    def _closest_point_on_path(
+        self,
+        point: GeoPoint
+    ) -> GeoPoint:
+        """Returns closest point on great circle path segment to the point.
+
+        If the point is within the extent of the segment, the point returned is
+        on the segment path otherwise, it is the closest endpoint defining the
+        path segment.
+
+        Parameters
+        ----------
+        point : GeoPoint
+            point of intersection between paths
+
+        Returns
+        -------
+        GeoPoint
+            Closest point on path segment.
+
+        """
         point_c = self._closest_point_on_great_circle(point)
         if self.on_path(point_c):
             return point_c.to_geo_point()
@@ -1706,6 +2118,13 @@ class FrameE(_FrameEBase):
     origin coincides with Earth's centre (geometrical centre of ellipsoid
     model).
 
+    The following arithmetic and inequality operators are defined for a :py:class:`envector.objects.FrameE`.
+
+    __eq__ : bool
+        Equality operator (`==`), which compares the numerical values of `a`, `f`, and `R_Ee`.
+    __ne__ : bool
+        Inequality operator (`!=`), which compares the numerical values of `a`, `f`, and `R_Ee`.
+
     See also
     --------
     FrameN, FrameL, FrameB
@@ -1730,7 +2149,7 @@ class FrameE(_FrameEBase):
         """Rotation matrix R_Ee defining the axes of the coordinate frame E"""
         return E_rotation(self.axes)
 
-    def _is_equal_to(self, other, rtol=1e-12, atol=1e-14):
+    def _is_equal_to(self, other: FrameE, rtol: float=1e-12, atol: float=1e-14) -> bool:
         return (allclose(self.a, other.a, rtol=rtol, atol=atol)
                 and allclose(self.f, other.f, rtol=rtol, atol=atol)
                 and allclose(self.R_Ee, other.R_Ee, rtol=rtol, atol=atol))
@@ -1949,7 +2368,7 @@ class _LocalFrame(_LocalFrameBase):
         Returns
         -------
         Pvector
-
+            The pvector in the local frame
         """
         return Pvector(pvector, frame=self)
 
@@ -1961,8 +2380,8 @@ class FrameN(_LocalFrame):
 
     Parameters
     ----------
-    point: ECEFvector, GeoPoint or Nvector object
-        position of the vehicle (B) which also defines the origin of the local
+    point : ECEFvector | GeoPoint | Nvector
+        Position of the vehicle (B) which also defines the origin of the local
         frame N. The origin is directly beneath or above the vehicle (B), at
         Earth's surface (surface of ellipsoid model).
 
@@ -1984,6 +2403,13 @@ class FrameN(_LocalFrame):
     x- and y-axes are not defined here. Hence, this coordinate frame is
     NOT SUITABLE for general calculations.
 
+    The following arithmetic and inequality operators are defined for a :py:class:`envector.objects.FrameN`.
+
+    __eq__ : bool
+        Equality operator (`==`), which compares the numerical values of `R_Ee` and `nvector` associated attributes.
+    __ne__ : bool
+        Inequality operator (`!=`), which compares the numerical values of `R_Ee` and `nvector` associated attributes.
+
     Examples
     --------
     {super}
@@ -1998,7 +2424,7 @@ class FrameN(_LocalFrame):
     nvector: Nvector
     """n-vector"""
 
-    def __init__(self, point):
+    def __init__(self, point: Union[ECEFvector, GeoPoint, Nvector]) -> None:
         nvector = point.to_nvector()
         self.nvector = Nvector(nvector.normal, z=0, frame=nvector.frame)
 
@@ -2008,7 +2434,7 @@ class FrameN(_LocalFrame):
         nvector = self.nvector
         return n_E2R_EN(nvector.normal, nvector.frame.R_Ee)
 
-    def _is_equal_to(self, other, rtol=1e-12, atol=1e-14):
+    def _is_equal_to(self, other: FrameN, rtol: float=1e-12, atol: float=1e-14) -> bool:
         return (allclose(self.R_EN, other.R_EN, rtol=rtol, atol=atol)
                 and self.nvector == other.nvector)
 
@@ -2051,6 +2477,13 @@ class FrameL(FrameN):
     the wander azimuth angle. The L-frame is well suited for general
     calculations, as it is non-singular.
 
+    The following arithmetic and inequality operators are defined for a :py:class:`envector.objects.FrameL`.
+
+    __eq__ : bool
+        Equality operator (`==`), which compares the numerical values of `R_Ee` and `nvector` associated attributes.
+    __ne__ : bool
+        Inequality operator (`!=`), which compares the numerical values of `R_Ee` and `nvector` associated attributes.
+
     See also
     --------
     FrameE, FrameN, FrameB
@@ -2060,7 +2493,11 @@ class FrameL(FrameN):
     wander_azimuth: Union[int, float, list, tuple, ndarray]
     """Angle [rad] between the x-axis of L and the north direction."""
 
-    def __init__(self, point, wander_azimuth: Union[int, float, list, tuple, ndarray]=0) -> None:
+    def __init__(
+        self,
+        point: Union[ECEFvector, GeoPoint, Nvector],
+        wander_azimuth: Union[int, float, list, tuple, ndarray]=0
+    ) -> None:
         super(FrameL, self).__init__(point)
         self.wander_azimuth = wander_azimuth
 
@@ -2089,7 +2526,7 @@ class FrameB(_LocalFrame):
         Roll defining the orientation of frame B in [deg] or [rad].
     degrees : bool
         if True yaw, pitch, roll are given in degrees otherwise in radians
-\
+
     Attributes
     ----------
     nvector : Nvector
@@ -2107,6 +2544,15 @@ class FrameB(_LocalFrame):
     y-axis to the right (starboard) and the z-axis in the vehicle's down
     direction.
 
+    The following arithmetic and inequality operators are defined for a :py:class:`envector.objects.FrameB`.
+
+    __eq__ : bool
+        Equality operator (`==`), which compares the numerical values of `yaw`, `pitch`, `roll`, `R_Ee`, and `nvector`
+        associated attributes.
+    __ne__ : bool
+        Inequality operator (`!=`), which compares the numerical values of `yaw`, `pitch`, `roll`, `R_Ee`, and `nvector`
+        associated attributes.
+
     Examples
     --------
     {super}
@@ -2117,11 +2563,24 @@ class FrameB(_LocalFrame):
     """
 
     _NAMES = ('point', 'yaw', 'pitch', 'roll')
+    """Names for the class repr"""
+    nvector: Nvector
+    """Normal vector from input `point.to_nvector()`"""
     yaw: Union[int, float, float64, ndarray]
+    """Yaw defining the orientation of frame B in [rad]."""
     pitch: Union[int, float, float64, ndarray]
+    """Pitch defining the orientation of frame B in [rad]."""
     roll: Union[int, float, float64, ndarray]
+    """Roll defining the orientation of frame B in [rad]."""
 
-    def __init__(self, point, yaw=0, pitch=0, roll=0, degrees=False):
+    def __init__(
+        self,
+        point: Union[ECEFvector, GeoPoint, Nvector],
+        yaw: Union[int, float, float64, ndarray]=0,
+        pitch: Union[int, float, float64, ndarray]=0,
+        roll: Union[int, float, float64, ndarray]=0,
+        degrees: bool=False
+    ) -> None:
         self.nvector = point.to_nvector()
         if degrees:
             yaw, pitch, roll = rad(yaw), rad(pitch), rad(roll)
@@ -2137,7 +2596,7 @@ class FrameB(_LocalFrame):
         R_EN = n_E2R_EN(n_EB_E, self.nvector.frame.R_Ee)
         return mdot(R_EN, R_NB)  # rotation matrix
 
-    def _is_equal_to(self, other, rtol=1e-12, atol=1e-14):
+    def _is_equal_to(self, other: FrameB, rtol: float=1e-12, atol: float=1e-14) -> bool:
         return (allclose(self.yaw, other.yaw, rtol=rtol, atol=atol)
                 and allclose(self.pitch, other.pitch, rtol=rtol, atol=atol)
                 and allclose(self.roll, other.roll, rtol=rtol, atol=atol)
@@ -2149,6 +2608,24 @@ def _check_frames(
     self: Union[GeoPoint, Nvector, Pvector, ECEFvector],
     other: Union[GeoPoint, Nvector, Pvector, ECEFvector],
 ) -> None:
+    """Validates that two frames are equal, else raise an error.
+
+    Parameters
+    ----------
+    self : GeoPoint | Nvector | Pvector | ECEFvector
+        Self point or vector
+    other : GeoPoint | Nvector | Pvector | ECEFvector
+        A different point or vector
+
+    Returns
+    -------
+    None
+
+    Raises
+    ------
+    ValueError
+        When the two frames are unequal.
+    """
     if not self.frame == other.frame:
         raise ValueError('Frames are unequal')
 
@@ -2156,6 +2633,18 @@ def _check_frames(
 def _default_frame(
     frame: Union[FrameB, FrameE, FrameL, FrameN, None],
 ) -> Union[FrameB, FrameE, FrameL, FrameN]:
+    """Get the default frame if None or return itself
+
+    Parameters
+    ----------
+    frame : FrameB | FrameE | FrameL | FrameN | None
+        A frame instance or None
+
+    Returns
+    -------
+    FrameB | FrameE | FrameL | FrameN
+        Instantiated frame
+    """
     if frame is None:
         return FrameE()
     return frame

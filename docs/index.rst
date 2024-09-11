@@ -26,12 +26,19 @@ If you are coming from the nvector_ package, these Q-and-A can quickly explain t
     * If your Python software worked with nvector_, then there is a good chance envector_ will also work. The caveats
       are that this package abandons Python2 and extends to Python3.9+ support.
 
-2. *Why did you fork nvector*?
+2. *Why did you call this package "envector"*?
+
+    * The name honors the original nvector_ Python package and the progenitor `MATLAB n-vector toolbox`_. There are
+      adaptations in other languages as noted in the `nvector downloads`_ page.
+    * The names nvector_ and envector_ are homophones (pronounced the same), so the name invokes the original n-vector
+      origin.
+
+3. *Why did you fork nvector*?
 
     * Primarily because the nvector_ Python package is broken with NumPy version 2.
     * There is no indication that the situation will change.
 
-3. *What changes are there with from nvector*?
+4. *What changes are there with from nvector*?
 
     * Any place there is a `import nvector` or `from nvector` statement, replace it with `import envector` or
       `from envector`, respectively.
@@ -39,7 +46,7 @@ If you are coming from the nvector_ package, these Q-and-A can quickly explain t
     * Documentation is expanded in some cases.
     * The docstrings have been refactored to utilize the Napoleon docstring style.
 
-4. *When is the appropriate to switch to envector*?
+5. *When is the appropriate to switch to envector*?
 
     * If your Python software must support NumPy version 2,
     * If your Python software also stops supporting Python versions after its end-of-life cycle.
@@ -80,4 +87,5 @@ If you are coming from the nvector_ package, these Q-and-A can quickly explain t
 
 .. _envector: https://github.com/mhogan-nwra/envector
 .. _nvector: https://github.com/pbrod/nvector
-.. _toolbox: http://www.navlab.net/nvector/#download>
+.. _nvector downloads: https://www.ffi.no/en/research/n-vector/n-vector-downloads
+.. _MATLAB n-vector toolbox: https://github.com/FFI-no/n-vector
