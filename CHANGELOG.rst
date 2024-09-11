@@ -24,10 +24,12 @@ Matt Hogan (4)
     * Added local testing support using nox.
     * Remove numpydoc from the documentation requirements as it is not used.
 
-Version 0.3.1, September 10, 2024
+Version 0.3.1, September 11, 2024
 =================================
-Matt Hogan (4)
-    * Embraced 3.9+ support with more descriptive static typing
-    * Expanded or added docstrings
+Matt Hogan (6)
+    * Embraced 3.9+ support with more descriptive static typing.
+    * Expanded or added docstrings.
     * Fixed some pytest failures associated with matplotlib opening multiple figures simultaneously.
-    * Added missing figures to the documentation
+    * Added missing figures to the documentation.
+    * Updated the noxfile to support multiple virtual environment backends.
+    * Expand documentation on the reasons for the existence of envector.
