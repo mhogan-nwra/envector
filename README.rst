@@ -629,7 +629,7 @@ to do the calculations.
 .. _nvector downloads: https://www.ffi.no/en/research/n-vector/n-vector-downloads
 .. _MATLAB n-vector toolbox: https://github.com/FFI-no/n-vector
 .. |pkg_img| image:: https://badge.fury.io/py/envector.svg
-   :target: https://pypi.python.org/pypi/envector/
+   :target: https://badge.fury.io/py/envector
 .. |docs_img| image:: https://readthedocs.org/projects/pip/badge/?version=stable
    :target: http://envector.readthedocs.org/en/stable/
 .. |versions_img| image:: https://img.shields.io/pypi/pyversions/envector.svg

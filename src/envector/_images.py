@@ -2,7 +2,7 @@ r"""
 .. only:: html
 
     .. |pkg_img| image:: https://badge.fury.io/py/envector.svg
-       :target: https://pypi.python.org/pypi/envector/
+       :target: ttps://badge.fury.io/py/envector
 
     .. |docs_img| image:: https://readthedocs.org/projects/pip/badge/?version=stable
        :target: http://envector.readthedocs.org/en/stable/
