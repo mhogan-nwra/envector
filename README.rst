@@ -9,23 +9,36 @@ envector
 The envector library is a suite of tools written in Python to solve geographical position calculations. This is
 an open-source fork of the original nvector_ Python package based on the `MATLAB n-vector toolbox`_.
 
-Currently the following operations are implemented:
+Explanation of Intent
+=====================
 
-* Calculate the surface distance between two geographical positions.
+This is a Python package that will assist you in calculating the distance between two points anywhere on, above, or
+below the Earth's surface. This can also be between two, three, or many points. This is quite useful in many areas from
+logistics, tracking, navigation, data analytics, data science, and research. The calculations are simple and
+non-singular. Full accuracy is achieved for any global position (and for any distance).
 
-* Convert positions given in one reference frame into another reference frame.
+Use Cases
+=========
 
-* Find the destination point given start point, azimuth/bearing and distance.
+A use case in logistics is when you need to recommend to your customers the closest facilities or store
+locations given an address or GPS coordinates. Your customers usually provide an address and you can convert that to GPS
+coordinates, or geographic location in latitude and longitude. Given this information, you need to recommend the closest
+locations and approximate distance in kilometers (km) or miles. You can implement the Haversine formula, which is a
+reasonable estimate if you are concerned with relatively short distances less than 100 km. However, you might meed to be
+aware of the difference in altitudes between two locations. On top of all that, the Haversine formula is not accurate
+for longer distances as the Earth is not exactly a sphere. You can properly account for all these issues using our
+envector_ package.
 
-* Find the mean position (center/midpoint) of several geographical positions.
+Another use case is for navigation and tracking. Imagine that you
+have a vehicle like a ship, airplane, or off-road vehicle on a fixed course. The vehicle has an unreliable and
+inaccurate GPS unit, and it is your job to ensure that the vehicle stays on course. This makes your job much harder if
+you want to minimize the trip duration and vehicle fuel to maximize the number of trips possible for the day.
+Fortunately, the envector_ package can help you 1) aggregate measurements to estimate the mean position, 2) interpolate
+the next expected position in a fixed time interval, and 3) ensure that the vehicle is staying on-track by minimizing
+the cross-track distance from the intended path.
 
-* Find the intersection between two paths.
-
-* Find the cross track distance between a path and a position.
-
-
-Using envector, the calculations become simple and non-singular.
-Full accuracy is achieved for any global position (and for any distance).
+These use cases and more are well supported by the envector_ package. We encourage you to check out the
+examples_ to help you maximize the utility of envector_.
 
 Questions and Answers
 =====================
@@ -160,11 +173,9 @@ If you are coming from the nvector_ package, these Q-and-A can quickly explain t
                         import envector as nv
 
 
+Technical Description
+=====================
 
-
-
-Description
-===========
 In this library, we represent position with an "n-vector",  which
 is the normal vector to the Earth model (the same reference ellipsoid that is
 used for latitude and longitude). When using n-vector, all Earth-positions are
@@ -243,8 +254,10 @@ python session::
    nv.test('--doctest-modules')
 
 
-Getting Started
-===============
+.. _examples:
+
+Getting Started with Examples
+=============================
 
 Below the object-oriented solution to some common geodesic problems are given.
 In the first example the functional solution is also given.
