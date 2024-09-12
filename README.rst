@@ -7,7 +7,7 @@ envector
 
 
 The envector library is a suite of tools written in Python to solve geographical position calculations. This is
-an open-source fork of the original nvector_ Python package based on the MATLAB nvector `MATLAB n-vector toolbox`_.
+an open-source fork of the original nvector_ Python package based on the `MATLAB n-vector toolbox`_.
 
 Currently the following operations are implemented:
 
