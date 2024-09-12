@@ -38,7 +38,7 @@ the next expected position in a fixed time interval, and 3) ensure that the vehi
 the cross-track distance from the intended path.
 
 These use cases and more are well supported by the envector_ package. We encourage you to check out the
-examples_ to help you maximize the utility of envector_.
+examples below to help you maximize the utility of envector_.
 
 Questions and Answers
 =====================
