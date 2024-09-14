@@ -34,7 +34,7 @@ have a vehicle like a ship, airplane, or off-road vehicle on a fixed course. The
 inaccurate GPS unit, and it is your job to ensure that the vehicle stays on course. This makes your job much harder if
 you want to minimize the trip duration and vehicle fuel to maximize the number of trips possible for the day.
 Fortunately, the envector_ package can help you 1) aggregate measurements to estimate the mean position, 2) interpolate
-the next expected position in a fixed time interval, and 3) ensure that the vehicle is staying on-track by minimizing
+the next expected position in a fixed time interval, and 3) determine if the vehicle is veering off-course by measuring
 the cross-track distance from the intended path.
 
 These use cases and more are well supported by the envector_ package. We encourage you to check out the
