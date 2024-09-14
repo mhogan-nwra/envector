@@ -99,17 +99,20 @@ If you are coming from the nvector_ package, these Q-and-A can quickly explain t
         .. code-block:: text
             :caption: `requirements.txt` format
 
+            # requirements.txt format
             envector>=0
 
         .. code-block:: yaml
             :caption: Anaconda `environment.yml` format
 
+            # environment.yml format
             - pip:
               - envector>=0
 
         .. code-block:: toml
             :caption: `pyproject.toml` format
 
+            # pyproject.toml format
             # PEP 508 compliant
             [project]
             dependencies = [
@@ -123,16 +126,12 @@ If you are coming from the nvector_ package, these Q-and-A can quickly explain t
         .. code-block:: python
             :caption: `setup.py` format
 
+            # setup.py format
             install_requires=['envector>=0',
                               ...
                               ]
 
         * Your Python code will now need to import envector_
-
-            .. code-block:: python
-                :caption: Importing envector into your module
-
-                    import envector as nv
 
     * If your project uses anything less than CPython3.9, then it depends on how your project is specified. If you are
       using `pyproject.toml` or `setup.py`, then the changes are relatively simple as shown below. The other common
@@ -142,6 +141,7 @@ If you are coming from the nvector_ package, these Q-and-A can quickly explain t
         .. code-block:: toml
             :caption: `pyproject.toml` format to specify both nvector and envector
 
+            # pyproject.toml format
             # PEP 508 compliant
             [project]
             dependencies = [
@@ -157,16 +157,18 @@ If you are coming from the nvector_ package, these Q-and-A can quickly explain t
         .. code-block:: python
             :caption: `setup.py` format to specify both nvector and envector
 
+            # setup.py format
             install_requires=['envector>=0; python_version >= "3.9"',
                               'nvector>=0; python_version < "3.9"',
                               ...
                               ]
 
-        * Your Python code will now need to import both envector_ and nvector_
+        * Your Python code will now need to try and import envector_ or nvector_ in a try-except block.
 
             .. code-block:: python
                 :caption: Code block to import either nvector or envector
 
+                    # Code block to import either nvector or envector
                     try:
                         import nvector as nv
                     except (ImportError,):
