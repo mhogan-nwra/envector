@@ -26,8 +26,9 @@ Full accuracy is achieved for any global position (and for any distance).
 
 
 
-Description
-===========
+Technical Description
+=====================
+
 In this library, we represent position with an "n-vector",  which
 is the normal vector to the Earth model (the same reference ellipsoid that is
 used for latitude and longitude). When using n-vector, all Earth-positions are

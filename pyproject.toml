@@ -1,7 +1,7 @@
 [project]
 name = "envector"
 dynamic = ["version"]
-description = "The envector library is a suite of tools written in Python to solve geographical position calculations forked from nvector."
+description = "The envector package is a suite of tools written in Python forked from the nvector package to solve geographical position calculations powered by means of n-vector."
 authors = [
     {name = "Matt Hogan", email = "mhogan@nwra.com"},
     {name = "Kenneth Gade, FFI"},
